@@ -40,6 +40,11 @@ add_executable(linear_regression_tests tests/linear_regression_tests.cpp)
 target_link_libraries(linear_regression_tests PRIVATE ml_library)
 add_test(NAME linear_regression_tests COMMAND linear_regression_tests)
 
+# K-Means tests
+add_executable(kmeans_tests tests/kmeans_tests.cpp)
+target_link_libraries(kmeans_tests PRIVATE ml_library)
+add_test(NAME kmeans_tests COMMAND kmeans_tests)
+
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
@@ -48,11 +53,13 @@ if(MSVC)
     target_compile_options(ml_demo PRIVATE /W4)
     target_compile_options(matrix_tests PRIVATE /W4)
     target_compile_options(linear_regression_tests PRIVATE /W4)
+    target_compile_options(kmeans_tests PRIVATE /W4)
 else()
     target_compile_options(ml_library PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(ml_demo PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(matrix_tests PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(linear_regression_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(kmeans_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # -------------------------------------------------

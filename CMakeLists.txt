@@ -26,13 +26,19 @@ add_executable(ml_demo examples/demo.cpp)
 target_link_libraries(ml_demo PRIVATE ml_library)
 
 # -------------------------------------------------
-# Matrix tests
+# Tests
 # -------------------------------------------------
 enable_testing()
 
+# Matrix tests
 add_executable(matrix_tests tests/matrix_tests.cpp)
 target_link_libraries(matrix_tests PRIVATE ml_library)
 add_test(NAME matrix_tests COMMAND matrix_tests)
+
+# Linear Regression tests
+add_executable(linear_regression_tests tests/linear_regression_tests.cpp)
+target_link_libraries(linear_regression_tests PRIVATE ml_library)
+add_test(NAME linear_regression_tests COMMAND linear_regression_tests)
 
 # -------------------------------------------------
 # Compiler warnings
@@ -41,10 +47,12 @@ if(MSVC)
     target_compile_options(ml_library PRIVATE /W4)
     target_compile_options(ml_demo PRIVATE /W4)
     target_compile_options(matrix_tests PRIVATE /W4)
+    target_compile_options(linear_regression_tests PRIVATE /W4)
 else()
     target_compile_options(ml_library PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(ml_demo PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(matrix_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(linear_regression_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # -------------------------------------------------

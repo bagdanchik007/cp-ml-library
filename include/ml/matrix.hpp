@@ -73,6 +73,7 @@ public:
         );
     }
 
+    // Transpose matrix
     Matrix transpose() const {
         Matrix result(cols, rows);
 
@@ -100,6 +101,93 @@ public:
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
                 result[i] += (*this)(i, j) * v[j];
+            }
+        }
+
+        return result;
+    }
+
+    // Matrix addition
+    Matrix operator+(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument(
+                "Matrix dimensions must match for addition"
+            );
+        }
+
+        Matrix result(rows, cols);
+
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = data[i] + other.data[i];
+        }
+
+        return result;
+    }
+
+    // Matrix subtraction
+    Matrix operator-(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument(
+                "Matrix dimensions must match for subtraction"
+            );
+        }
+
+        Matrix result(rows, cols);
+
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = data[i] - other.data[i];
+        }
+
+        return result;
+    }
+
+    // In-place matrix addition
+    Matrix& operator+=(const Matrix& other) {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument(
+                "Matrix dimensions must match for addition"
+            );
+        }
+
+        for (size_t i = 0; i < data.size(); ++i) {
+            data[i] += other.data[i];
+        }
+
+        return *this;
+    }
+
+    // In-place matrix subtraction
+    Matrix& operator-=(const Matrix& other) {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument(
+                "Matrix dimensions must match for subtraction"
+            );
+        }
+
+        for (size_t i = 0; i < data.size(); ++i) {
+            data[i] -= other.data[i];
+        }
+
+        return *this;
+    }
+
+    // Matrix multiplication
+    Matrix operator*(const Matrix& other) const {
+        if (cols != other.rows) {
+            throw std::invalid_argument(
+                "Matrix dimensions incompatible for multiplication"
+            );
+        }
+
+        Matrix result(rows, other.cols, 0.0);
+
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t k = 0; k < cols; ++k) {
+                const double value = (*this)(i, k);
+
+                for (size_t j = 0; j < other.cols; ++j) {
+                    result(i, j) += value * other(k, j);
+                }
             }
         }
 

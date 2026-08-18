@@ -26,12 +26,13 @@ add_executable(ml_demo examples/demo.cpp)
 target_link_libraries(ml_demo PRIVATE ml_library)
 
 # -------------------------------------------------
-# Basic tests (zero external dependencies)
+# Matrix tests
 # -------------------------------------------------
 enable_testing()
-add_executable(ml_tests tests/test_basic.cpp)
-target_link_libraries(ml_tests PRIVATE ml_library)
-add_test(NAME basic_tests COMMAND ml_tests)
+
+add_executable(matrix_tests tests/matrix_tests.cpp)
+target_link_libraries(matrix_tests PRIVATE ml_library)
+add_test(NAME matrix_tests COMMAND matrix_tests)
 
 # -------------------------------------------------
 # Compiler warnings
@@ -39,20 +40,22 @@ add_test(NAME basic_tests COMMAND ml_tests)
 if(MSVC)
     target_compile_options(ml_library PRIVATE /W4)
     target_compile_options(ml_demo PRIVATE /W4)
-    target_compile_options(ml_tests PRIVATE /W4)
+    target_compile_options(matrix_tests PRIVATE /W4)
 else()
     target_compile_options(ml_library PRIVATE -Wall -Wextra -Wpedantic)
     target_compile_options(ml_demo PRIVATE -Wall -Wextra -Wpedantic)
-    target_compile_options(ml_tests PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(matrix_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # -------------------------------------------------
 # Install rules
 # -------------------------------------------------
 include(GNUInstallDirs)
+
 install(TARGETS ml_library
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

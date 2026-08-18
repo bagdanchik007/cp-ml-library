@@ -22,7 +22,12 @@ target_include_directories(ml_library
 # -------------------------------------------------
 # Demo executable
 # -------------------------------------------------
-add_executable(ml_demo examples/demo.cpp)
+add_executable(ml_demo
+    examples/demo.cpp
+    examples/linear_regression_demo.cpp
+    examples/kmeans_demo.cpp
+)
+
 target_link_libraries(ml_demo PRIVATE ml_library)
 
 # -------------------------------------------------

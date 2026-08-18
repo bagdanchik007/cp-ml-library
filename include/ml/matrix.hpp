@@ -1,20 +1,20 @@
 #pragma once
 
-#include <vector>
-#include <stdexcept>
-#include <cmath>
-#include <iostream>
-#include <iomanip>
 #include <algorithm>
-#include <numeric>
+#include <cmath>
+#include <iomanip>
+#include <iostream>
 #include <random>
+#include <stdexcept>
+#include <vector>
 
 namespace ml {
 
 /**
  * @brief Lightweight dense matrix class for educational / portfolio ML library.
- *        Designed for clarity and correctness rather than maximum performance.
- *        For production workloads prefer Eigen or similar.
+ *
+ * Designed for clarity and correctness rather than maximum performance.
+ * For production workloads prefer Eigen or similar.
  */
 class Matrix {
 public:
@@ -31,10 +31,16 @@ public:
     Matrix(std::initializer_list<std::initializer_list<double>> init) {
         rows = init.size();
         cols = init.begin()->size();
+
         data.reserve(rows * cols);
+
         for (const auto& row : init) {
-            if (row.size() != cols)
-                throw std::invalid_argument("All rows must have the same length");
+            if (row.size() != cols) {
+                throw std::invalid_argument(
+                    "All rows must have the same length"
+                );
+            }
+
             data.insert(data.end(), row.begin(), row.end());
         }
     }
@@ -49,71 +55,172 @@ public:
 
     // Row access helper
     std::vector<double> row(size_t i) const {
-        return std::vector<double>(data.begin() + i * cols,
-                                   data.begin() + (i + 1) * cols);
+        return std::vector<double>(
+            data.begin() + i * cols,
+            data.begin() + (i + 1) * cols
+        );
     }
 
     void set_row(size_t i, const std::vector<double>& values) {
-        if (values.size() != cols)
+        if (values.size() != cols) {
             throw std::invalid_argument("Row size mismatch");
-        std::copy(values.begin(), values.end(), data.begin() + i * cols);
+        }
+
+        std::copy(
+            values.begin(),
+            values.end(),
+            data.begin() + i * cols
+        );
     }
 
     Matrix transpose() const {
-        Matrix t(cols, rows);
-        for (size_t i = 0; i < rows; ++i)
-            for (size_t j = 0; j < cols; ++j)
-                t(j, i) = (*this)(i, j);
-        return t;
-    }
+        Matrix result(cols, rows);
 
-    // Matrix-vector product
-    std::vector<double> operator*(const std::vector<double>& v) const {
-        if (cols != v.size())
-            throw std::invalid_argument("Matrix-vector dimension mismatch");
-        std::vector<double> result(rows, 0.0);
-        for (size_t i = 0; i < rows; ++i)
-            for (size_t j = 0; j < cols; ++j)
-                result[i] += (*this)(i, j) * v[j];
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                result(j, i) = (*this)(i, j);
+            }
+        }
+
         return result;
     }
 
+    // Matrix-vector product
+    std::vector<double> operator*(
+        const std::vector<double>& v
+    ) const {
+        if (cols != v.size()) {
+            throw std::invalid_argument(
+                "Matrix-vector dimension mismatch"
+            );
+        }
+
+        std::vector<double> result(rows, 0.0);
+
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                result[i] += (*this)(i, j) * v[j];
+            }
+        }
+
+        return result;
+    }
+
+    // Scalar multiplication
+    Matrix operator*(double scalar) const {
+        Matrix result(rows, cols);
+
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = data[i] * scalar;
+        }
+
+        return result;
+    }
+
+    // Scalar division
+    Matrix operator/(double scalar) const {
+        if (std::abs(scalar) < 1e-12) {
+            throw std::invalid_argument("Division by zero");
+        }
+
+        Matrix result(rows, cols);
+
+        for (size_t i = 0; i < data.size(); ++i) {
+            result.data[i] = data[i] / scalar;
+        }
+
+        return result;
+    }
+
+    // In-place scalar multiplication
+    Matrix& operator*=(double scalar) {
+        for (auto& value : data) {
+            value *= scalar;
+        }
+
+        return *this;
+    }
+
+    // In-place scalar division
+    Matrix& operator/=(double scalar) {
+        if (std::abs(scalar) < 1e-12) {
+            throw std::invalid_argument("Division by zero");
+        }
+
+        for (auto& value : data) {
+            value /= scalar;
+        }
+
+        return *this;
+    }
+
     // Simple pretty print
-    void print(std::ostream& os = std::cout, int precision = 4) const {
+    void print(
+        std::ostream& os = std::cout,
+        int precision = 4
+    ) const {
         os << std::fixed << std::setprecision(precision);
+
         for (size_t i = 0; i < rows; ++i) {
             os << "[ ";
-            for (size_t j = 0; j < cols; ++j)
-                os << std::setw(8) << (*this)(i, j) << " ";
+
+            for (size_t j = 0; j < cols; ++j) {
+                os << std::setw(8)
+                   << (*this)(i, j)
+                   << " ";
+            }
+
             os << "]\n";
         }
     }
 
-    static Matrix zeros(size_t r, size_t c) { return Matrix(r, c, 0.0); }
-    static Matrix ones(size_t r, size_t c)  { return Matrix(r, c, 1.0); }
+    static Matrix zeros(size_t r, size_t c) {
+        return Matrix(r, c, 0.0);
+    }
+
+    static Matrix ones(size_t r, size_t c) {
+        return Matrix(r, c, 1.0);
+    }
 
     // Random matrix (useful for testing)
-    static Matrix random(size_t r, size_t c, double low = -1.0, double high = 1.0,
-                         unsigned seed = 42) {
+    static Matrix random(
+        size_t r,
+        size_t c,
+        double low = -1.0,
+        double high = 1.0,
+        unsigned seed = 42
+    ) {
         Matrix m(r, c);
+
         std::mt19937 gen(seed);
         std::uniform_real_distribution<double> dist(low, high);
-        for (auto& val : m.data)
-            val = dist(gen);
+
+        for (auto& value : m.data) {
+            value = dist(gen);
+        }
+
         return m;
     }
 };
 
 // Euclidean distance between two vectors
-inline double euclidean_distance(const std::vector<double>& a,
-                                 const std::vector<double>& b) {
-    if (a.size() != b.size())
-        throw std::invalid_argument("Vectors must have same dimension");
-    double sum = 0.0;
-    for (size_t i = 0; i < a.size(); ++i) {
-        double d = a[i] - b[i];
-        sum += d * d;
+inline double euclidean_distance(
+    const std::vector<double>& a,
+    const std::vector<double>& b
+) {
+    if (a.size() != b.size()) {
+        throw std::invalid_argument(
+            "Vectors must have same dimension"
+        );
     }
+
+    double sum = 0.0;
+
+    for (size_t i = 0; i < a.size(); ++i) {
+        const double difference = a[i] - b[i];
+        sum += difference * difference;
+    }
+
     return std::sqrt(sum);
 }
 

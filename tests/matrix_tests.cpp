@@ -37,7 +37,7 @@ void test_matrix_transpose() {
         {4.0, 5.0, 6.0}
     };
 
-    Matrix t = m.transpose();
+    const Matrix t = m.transpose();
 
     assert(t.rows == 3);
     assert(t.cols == 2);
@@ -62,7 +62,7 @@ void test_matrix_vector_multiplication() {
         {3.0, 4.0}
     };
 
-    std::vector<double> v = {
+    const std::vector<double> v = {
         1.0,
         1.0
     };
@@ -70,7 +70,6 @@ void test_matrix_vector_multiplication() {
     const auto result = m * v;
 
     assert(result.size() == 2);
-
     assert(std::abs(result[0] - 3.0) < 1e-9);
     assert(std::abs(result[1] - 7.0) < 1e-9);
 
@@ -312,7 +311,6 @@ void test_random_matrix() {
     assert(a.rows == 3);
     assert(a.cols == 3);
 
-    // Same seed must produce deterministic results.
     assert(a.data == b.data);
 
     for (double value : a.data) {
@@ -473,7 +471,6 @@ void test_euclidean_distance_dimension_error() {
     std::cout << "OK\n";
 }
 
-} // namespace
 void test_identity_matrix() {
     std::cout << "[TEST] Identity matrix ... ";
 
@@ -589,7 +586,6 @@ void test_determinant_non_square_error() {
     assert(thrown);
 
     std::cout << "OK\n";
-
 }
 
 void test_determinant_empty_matrix_error() {
@@ -611,32 +607,95 @@ void test_determinant_empty_matrix_error() {
     std::cout << "OK\n";
 }
 
+void test_matrix_inverse() {
+    std::cout << "[TEST] Matrix inverse ... ";
+
+    Matrix m = {
+        {4.0, 7.0},
+        {2.0, 6.0}
+    };
+
+    const Matrix inverse = m.inverse();
+
+    assert(std::abs(inverse(0, 0) - 0.6) < 1e-9);
+    assert(std::abs(inverse(0, 1) + 0.7) < 1e-9);
+    assert(std::abs(inverse(1, 0) + 0.2) < 1e-9);
+    assert(std::abs(inverse(1, 1) - 0.4) < 1e-9);
+
+    std::cout << "OK\n";
+}
+
+void test_matrix_inverse_errors() {
+    std::cout << "[TEST] Matrix inverse validation ... ";
+
+    bool non_square_thrown = false;
+
+    try {
+        Matrix non_square = {
+            {1.0, 2.0, 3.0},
+            {4.0, 5.0, 6.0}
+        };
+
+        [[maybe_unused]] const Matrix result =
+            non_square.inverse();
+    } catch (const std::invalid_argument&) {
+        non_square_thrown = true;
+    }
+
+    assert(non_square_thrown);
+
+    bool singular_thrown = false;
+
+    try {
+        Matrix singular = {
+            {1.0, 2.0},
+            {2.0, 4.0}
+        };
+
+        [[maybe_unused]] const Matrix result =
+            singular.inverse();
+    } catch (const std::invalid_argument&) {
+        singular_thrown = true;
+    }
+
+    assert(singular_thrown);
+
+    std::cout << "OK\n";
+}
+
+} // namespace
+
 int main() {
     std::cout << "Running matrix tests...\n\n";
 
+    // Basic matrix operations
     test_matrix_construction();
     test_matrix_transpose();
     test_matrix_vector_multiplication();
 
+    // Basic arithmetic operations
     test_matrix_addition();
     test_matrix_subtraction();
     test_matrix_multiplication();
 
+    // In-place operations
     test_inplace_addition();
     test_inplace_subtraction();
 
+    // Scalar operations
     test_scalar_operations();
     test_inplace_scalar_operations();
 
+    // Matrix utilities
     test_factory_methods();
     test_row_operations();
     test_random_matrix();
 
+    // Validation
     test_dimension_errors();
     test_scalar_division_by_zero();
 
-    test_euclidean_distance();
-    test_euclidean_distance_dimension_error();
+    // Vector utilities
     test_euclidean_distance();
     test_euclidean_distance_dimension_error();
 
@@ -650,6 +709,10 @@ int main() {
     test_determinant_3x3();
     test_determinant_non_square_error();
     test_determinant_empty_matrix_error();
+
+    // Matrix inverse
+    test_matrix_inverse();
+    test_matrix_inverse_errors();
 
     std::cout << "\nAll matrix tests passed!\n";
 

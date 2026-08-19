@@ -144,6 +144,91 @@ public:
 
         return result;
     }
+    // Matrix inverse using Gauss-Jordan elimination
+Matrix inverse() const {
+    if (rows != cols) {
+        throw std::invalid_argument(
+            "Inverse requires a square matrix"
+        );
+    }
+
+    if (rows == 0) {
+        throw std::invalid_argument(
+            "Inverse of an empty matrix is undefined"
+        );
+    }
+
+    Matrix augmented(rows, cols * 2);
+
+    // Build augmented matrix [A | I].
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            augmented(i, j) = (*this)(i, j);
+            augmented(i, j + cols) =
+                (i == j) ? 1.0 : 0.0;
+        }
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        // Find the best pivot.
+        size_t pivot_row = i;
+
+        for (size_t row = i + 1; row < rows; ++row) {
+            if (std::abs(augmented(row, i)) >
+                std::abs(augmented(pivot_row, i))) {
+                pivot_row = row;
+            }
+        }
+
+        if (std::abs(augmented(pivot_row, i)) < 1e-12) {
+            throw std::invalid_argument(
+                "Matrix is singular and cannot be inverted"
+            );
+        }
+
+        // Swap the pivot row into position.
+        if (pivot_row != i) {
+            for (size_t j = 0; j < augmented.cols; ++j) {
+                std::swap(
+                    augmented(i, j),
+                    augmented(pivot_row, j)
+                );
+            }
+        }
+
+        // Normalize the pivot row.
+        const double pivot = augmented(i, i);
+
+        for (size_t j = 0; j < augmented.cols; ++j) {
+            augmented(i, j) /= pivot;
+        }
+
+        // Eliminate the pivot column from all other rows.
+        for (size_t row = 0; row < rows; ++row) {
+            if (row == i) {
+                continue;
+            }
+
+            const double factor = augmented(row, i);
+
+            for (size_t j = 0; j < augmented.cols; ++j) {
+                augmented(row, j) -=
+                    factor * augmented(i, j);
+            }
+        }
+    }
+
+    Matrix result(rows, cols);
+
+    // Extract the right half, which is A^-1.
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            result(i, j) = augmented(i, j + cols);
+        }
+    }
+
+    return result;
+}
     // Matrix-vector product
     std::vector<double> operator*(
         const std::vector<double>& v

@@ -44,7 +44,7 @@ enable_testing()
 
 # Matrix tests
 add_executable(matrix_tests
-    tests/matrix_tests.cpp
+    tests/matrix_tests/matrix_tests.cpp
 )
 
 target_link_libraries(matrix_tests

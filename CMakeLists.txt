@@ -87,6 +87,21 @@ add_test(
     COMMAND matrix_utility_tests
 )
 
+# Matrix validation tests
+add_executable(matrix_validation_tests
+    tests/matrix_tests/matrix_validation_tests.cpp
+)
+
+target_link_libraries(matrix_validation_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_validation_tests
+    COMMAND matrix_validation_tests
+)
+
 # Linear Regression tests
 add_executable(linear_regression_tests
     tests/linear_regression_tests.cpp
@@ -154,6 +169,12 @@ if(MSVC)
     )
 
     target_compile_options(
+        matrix_validation_tests
+        PRIVATE
+            /W4
+    )
+
+    target_compile_options(
         linear_regression_tests
         PRIVATE
             /W4
@@ -201,6 +222,14 @@ else()
 
     target_compile_options(
         matrix_utility_tests
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+    )
+
+    target_compile_options(
+        matrix_validation_tests
         PRIVATE
             -Wall
             -Wextra

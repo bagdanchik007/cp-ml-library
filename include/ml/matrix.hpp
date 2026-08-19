@@ -30,8 +30,13 @@ public:
     // Construct from 2D initializer list
     Matrix(std::initializer_list<std::initializer_list<double>> init) {
         rows = init.size();
-        cols = init.begin()->size();
 
+        if (rows == 0) {
+            cols = 0;
+            return;
+        }
+
+        cols = init.begin()->size();
         data.reserve(rows * cols);
 
         for (const auto& row : init) {
@@ -262,15 +267,28 @@ public:
         }
     }
 
+    // Factory: zero matrix
     static Matrix zeros(size_t r, size_t c) {
         return Matrix(r, c, 0.0);
     }
 
+    // Factory: matrix filled with ones
     static Matrix ones(size_t r, size_t c) {
         return Matrix(r, c, 1.0);
     }
 
-    // Random matrix (useful for testing)
+    // Factory: identity matrix
+    static Matrix identity(size_t size) {
+        Matrix result(size, size, 0.0);
+
+        for (size_t i = 0; i < size; ++i) {
+            result(i, i) = 1.0;
+        }
+
+        return result;
+    }
+
+    // Random matrix
     static Matrix random(
         size_t r,
         size_t c,
@@ -278,16 +296,16 @@ public:
         double high = 1.0,
         unsigned seed = 42
     ) {
-        Matrix m(r, c);
+        Matrix result(r, c);
 
         std::mt19937 gen(seed);
         std::uniform_real_distribution<double> dist(low, high);
 
-        for (auto& value : m.data) {
+        for (auto& value : result.data) {
             value = dist(gen);
         }
 
-        return m;
+        return result;
     }
 };
 

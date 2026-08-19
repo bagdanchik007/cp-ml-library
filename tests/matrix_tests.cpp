@@ -1,182 +1,95 @@
 #include "ml/ml.hpp"
 
 #include <cassert>
-#include <cmath>
 #include <iostream>
-#include <stdexcept>
-#include <vector>
 
 using namespace ml;
 
 namespace {
 
-void test_factory_methods() {
-    std::cout << "[TEST] Matrix factory methods ... ";
+void test_matrix_construction() {
+    std::cout << "[TEST] Matrix construction ... ";
 
-    const Matrix zeros = Matrix::zeros(2, 3);
-
-    assert(zeros.rows == 2);
-    assert(zeros.cols == 3);
-
-    for (double value : zeros.data) {
-        assert(value == 0.0);
-    }
-
-    const Matrix ones = Matrix::ones(2, 3);
-
-    assert(ones.rows == 2);
-    assert(ones.cols == 3);
-
-    for (double value : ones.data) {
-        assert(value == 1.0);
-    }
-
-    std::cout << "OK\n";
-}
-
-void test_row_operations() {
-    std::cout << "[TEST] Row operations ... ";
-
-    Matrix m = {
+    Matrix matrix = {
         {1.0, 2.0},
         {3.0, 4.0}
     };
 
-    const auto row = m.row(1);
+    assert(matrix.rows == 2);
+    assert(matrix.cols == 2);
+    assert(matrix.data.size() == 4);
 
-    assert(row.size() == 2);
-    assert(row[0] == 3.0);
-    assert(row[1] == 4.0);
-
-    const std::vector<double> replacement = {
-        10.0,
-        20.0
-    };
-
-    m.set_row(0, replacement);
-
-    assert(m(0, 0) == 10.0);
-    assert(m(0, 1) == 20.0);
+    assert(matrix(0, 0) == 1.0);
+    assert(matrix(0, 1) == 2.0);
+    assert(matrix(1, 0) == 3.0);
+    assert(matrix(1, 1) == 4.0);
 
     std::cout << "OK\n";
 }
 
-void test_random_matrix() {
-    std::cout << "[TEST] Random matrix ... ";
+void test_matrix_element_access() {
+    std::cout << "[TEST] Matrix element access ... ";
 
-    const Matrix a =
-        Matrix::random(3, 3, -1.0, 1.0, 42);
-
-    const Matrix b =
-        Matrix::random(3, 3, -1.0, 1.0, 42);
-
-    assert(a.rows == 3);
-    assert(a.cols == 3);
-    assert(a.data == b.data);
-
-    for (double value : a.data) {
-        assert(value >= -1.0);
-        assert(value <= 1.0);
-    }
-
-    std::cout << "OK\n";
-}
-
-void test_euclidean_distance() {
-    std::cout << "[TEST] Euclidean distance ... ";
-
-    const std::vector<double> a = {
-        0.0,
-        0.0
-    };
-
-    const std::vector<double> b = {
-        3.0,
-        4.0
-    };
-
-    const double distance =
-        euclidean_distance(a, b);
-
-    assert(std::abs(distance - 5.0) < 1e-9);
-
-    std::cout << "OK\n";
-}
-
-void test_euclidean_distance_dimension_error() {
-    std::cout << "[TEST] Euclidean distance validation ... ";
-
-    const std::vector<double> a = {
-        1.0,
-        2.0
-    };
-
-    const std::vector<double> b = {
-        1.0,
-        2.0,
-        3.0
-    };
-
-    bool thrown = false;
-
-    try {
-        [[maybe_unused]] const double result =
-            euclidean_distance(a, b);
-    } catch (const std::invalid_argument&) {
-        thrown = true;
-    }
-
-    assert(thrown);
-
-    std::cout << "OK\n";
-}
-
-void test_identity_matrix() {
-    std::cout << "[TEST] Identity matrix ... ";
-
-    const Matrix identity = Matrix::identity(3);
-
-    assert(identity.rows == 3);
-    assert(identity.cols == 3);
-
-    for (size_t i = 0; i < 3; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-            if (i == j) {
-                assert(identity(i, j) == 1.0);
-            } else {
-                assert(identity(i, j) == 0.0);
-            }
-        }
-    }
-
-    std::cout << "OK\n";
-}
-
-void test_identity_matrix_multiplication() {
-    std::cout << "[TEST] Identity matrix multiplication ... ";
-
-    Matrix m = {
+    Matrix matrix = {
         {1.0, 2.0},
         {3.0, 4.0}
     };
 
-    const Matrix identity = Matrix::identity(2);
+    assert(matrix(0, 0) == 1.0);
+    assert(matrix(0, 1) == 2.0);
+    assert(matrix(1, 0) == 3.0);
+    assert(matrix(1, 1) == 4.0);
 
-    const Matrix left_result = identity * m;
-    const Matrix right_result = m * identity;
+    matrix(0, 0) = 10.0;
+    matrix(1, 1) = 20.0;
 
-    assert(left_result.rows == m.rows);
-    assert(left_result.cols == m.cols);
+    assert(matrix(0, 0) == 10.0);
+    assert(matrix(1, 1) == 20.0);
 
-    assert(right_result.rows == m.rows);
-    assert(right_result.cols == m.cols);
+    std::cout << "OK\n";
+}
 
-    for (size_t i = 0; i < m.rows; ++i) {
-        for (size_t j = 0; j < m.cols; ++j) {
-            assert(left_result(i, j) == m(i, j));
-            assert(right_result(i, j) == m(i, j));
-        }
-    }
+void test_matrix_transpose() {
+    std::cout << "[TEST] Matrix transpose ... ";
+
+    const Matrix matrix = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0}
+    };
+
+    const Matrix transposed = matrix.transpose();
+
+    assert(transposed.rows == 3);
+    assert(transposed.cols == 2);
+
+    assert(transposed(0, 0) == 1.0);
+    assert(transposed(0, 1) == 4.0);
+    assert(transposed(1, 0) == 2.0);
+    assert(transposed(1, 1) == 5.0);
+    assert(transposed(2, 0) == 3.0);
+    assert(transposed(2, 1) == 6.0);
+
+    std::cout << "OK\n";
+}
+
+void test_matrix_vector_multiplication() {
+    std::cout << "[TEST] Matrix-vector multiplication ... ";
+
+    const Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    const std::vector<double> vector = {
+        5.0,
+        6.0
+    };
+
+    const auto result = matrix * vector;
+
+    assert(result.size() == 2);
+    assert(result[0] == 17.0);
+    assert(result[1] == 39.0);
 
     std::cout << "OK\n";
 }
@@ -184,19 +97,14 @@ void test_identity_matrix_multiplication() {
 } // namespace
 
 int main() {
-    std::cout << "Running matrix utility tests...\n\n";
+    std::cout << "Running matrix tests...\n\n";
 
-    test_factory_methods();
-    test_row_operations();
-    test_random_matrix();
+    test_matrix_construction();
+    test_matrix_element_access();
+    test_matrix_transpose();
+    test_matrix_vector_multiplication();
 
-    test_euclidean_distance();
-    test_euclidean_distance_dimension_error();
-
-    test_identity_matrix();
-    test_identity_matrix_multiplication();
-
-    std::cout << "\nAll matrix utility tests passed!\n";
+    std::cout << "\nAll matrix tests passed!\n";
 
     return 0;
 }

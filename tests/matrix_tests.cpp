@@ -665,6 +665,68 @@ void test_matrix_inverse_errors() {
 
 } // namespace
 
+void test_matrix_index_validation() {
+    std::cout << "[TEST] Matrix index validation ... ";
+
+    Matrix m = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    bool row_thrown = false;
+
+    try {
+        [[maybe_unused]] const double value = m(2, 0);
+    } catch (const std::out_of_range&) {
+        row_thrown = true;
+    }
+
+    assert(row_thrown);
+
+    bool column_thrown = false;
+
+    try {
+        [[maybe_unused]] const double value = m(0, 2);
+    } catch (const std::out_of_range&) {
+        column_thrown = true;
+    }
+
+    assert(column_thrown);
+
+    std::cout << "OK\n";
+}
+
+void test_matrix_row_validation() {
+    std::cout << "[TEST] Matrix row validation ... ";
+
+    Matrix m = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    bool row_access_thrown = false;
+
+    try {
+        [[maybe_unused]] const auto result = m.row(2);
+    } catch (const std::out_of_range&) {
+        row_access_thrown = true;
+    }
+
+    assert(row_access_thrown);
+
+    bool row_set_thrown = false;
+
+    try {
+        m.set_row(2, {10.0, 20.0});
+    } catch (const std::out_of_range&) {
+        row_set_thrown = true;
+    }
+
+    assert(row_set_thrown);
+
+    std::cout << "OK\n";
+}
+
 int main() {
     std::cout << "Running matrix tests...\n\n";
 
@@ -694,6 +756,8 @@ int main() {
     // Validation
     test_dimension_errors();
     test_scalar_division_by_zero();
+    test_matrix_index_validation();
+    test_matrix_row_validation();
 
     // Vector utilities
     test_euclidean_distance();

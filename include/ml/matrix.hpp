@@ -50,25 +50,56 @@ public:
         }
     }
 
+    // Element access
     double& operator()(size_t i, size_t j) {
+        if (i >= rows || j >= cols) {
+            throw std::out_of_range(
+                "Matrix index out of bounds"
+            );
+        }
+
         return data[i * cols + j];
     }
 
     const double& operator()(size_t i, size_t j) const {
+        if (i >= rows || j >= cols) {
+            throw std::out_of_range(
+                "Matrix index out of bounds"
+            );
+        }
+
         return data[i * cols + j];
     }
 
     // Row access helper
     std::vector<double> row(size_t i) const {
+        if (i >= rows) {
+            throw std::out_of_range(
+                "Matrix row index out of bounds"
+            );
+        }
+
         return std::vector<double>(
             data.begin() + i * cols,
             data.begin() + (i + 1) * cols
         );
     }
 
-    void set_row(size_t i, const std::vector<double>& values) {
+    // Replace an entire row
+    void set_row(
+        size_t i,
+        const std::vector<double>& values
+    ) {
+        if (i >= rows) {
+            throw std::out_of_range(
+                "Matrix row index out of bounds"
+            );
+        }
+
         if (values.size() != cols) {
-            throw std::invalid_argument("Row size mismatch");
+            throw std::invalid_argument(
+                "Row size mismatch"
+            );
         }
 
         std::copy(
@@ -128,7 +159,9 @@ public:
                         continue;
                     }
 
-                    minor(i - 1, minor_column) = (*this)(i, j);
+                    minor(i - 1, minor_column) =
+                        (*this)(i, j);
+
                     ++minor_column;
                 }
             }
@@ -144,91 +177,110 @@ public:
 
         return result;
     }
+
     // Matrix inverse using Gauss-Jordan elimination
-Matrix inverse() const {
-    if (rows != cols) {
-        throw std::invalid_argument(
-            "Inverse requires a square matrix"
-        );
-    }
-
-    if (rows == 0) {
-        throw std::invalid_argument(
-            "Inverse of an empty matrix is undefined"
-        );
-    }
-
-    Matrix augmented(rows, cols * 2);
-
-    // Build augmented matrix [A | I].
-    for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            augmented(i, j) = (*this)(i, j);
-            augmented(i, j + cols) =
-                (i == j) ? 1.0 : 0.0;
-        }
-    }
-
-    for (size_t i = 0; i < rows; ++i) {
-        // Find the best pivot.
-        size_t pivot_row = i;
-
-        for (size_t row = i + 1; row < rows; ++row) {
-            if (std::abs(augmented(row, i)) >
-                std::abs(augmented(pivot_row, i))) {
-                pivot_row = row;
-            }
-        }
-
-        if (std::abs(augmented(pivot_row, i)) < 1e-12) {
+    Matrix inverse() const {
+        if (rows != cols) {
             throw std::invalid_argument(
-                "Matrix is singular and cannot be inverted"
+                "Inverse requires a square matrix"
             );
         }
 
-        // Swap the pivot row into position.
-        if (pivot_row != i) {
-            for (size_t j = 0; j < augmented.cols; ++j) {
-                std::swap(
-                    augmented(i, j),
-                    augmented(pivot_row, j)
+        if (rows == 0) {
+            throw std::invalid_argument(
+                "Inverse of an empty matrix is undefined"
+            );
+        }
+
+        Matrix augmented(rows, cols * 2);
+
+        // Build augmented matrix [A | I].
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                augmented(i, j) = (*this)(i, j);
+
+                augmented(i, j + cols) =
+                    (i == j) ? 1.0 : 0.0;
+            }
+        }
+
+        for (size_t i = 0; i < rows; ++i) {
+            // Find the best pivot.
+            size_t pivot_row = i;
+
+            for (size_t row = i + 1; row < rows; ++row) {
+                if (
+                    std::abs(augmented(row, i)) >
+                    std::abs(augmented(pivot_row, i))
+                ) {
+                    pivot_row = row;
+                }
+            }
+
+            if (
+                std::abs(augmented(pivot_row, i)) <
+                1e-12
+            ) {
+                throw std::invalid_argument(
+                    "Matrix is singular and cannot be inverted"
                 );
             }
-        }
 
-        // Normalize the pivot row.
-        const double pivot = augmented(i, i);
-
-        for (size_t j = 0; j < augmented.cols; ++j) {
-            augmented(i, j) /= pivot;
-        }
-
-        // Eliminate the pivot column from all other rows.
-        for (size_t row = 0; row < rows; ++row) {
-            if (row == i) {
-                continue;
+            // Swap the pivot row into position.
+            if (pivot_row != i) {
+                for (size_t j = 0;
+                     j < augmented.cols;
+                     ++j) {
+                    std::swap(
+                        augmented(i, j),
+                        augmented(pivot_row, j)
+                    );
+                }
             }
 
-            const double factor = augmented(row, i);
+            // Normalize the pivot row.
+            const double pivot = augmented(i, i);
 
-            for (size_t j = 0; j < augmented.cols; ++j) {
-                augmented(row, j) -=
-                    factor * augmented(i, j);
+            for (size_t j = 0;
+                 j < augmented.cols;
+                 ++j) {
+                augmented(i, j) /= pivot;
+            }
+
+            // Eliminate the pivot column
+            // from all other rows.
+            for (size_t row = 0;
+                 row < rows;
+                 ++row) {
+                if (row == i) {
+                    continue;
+                }
+
+                const double factor =
+                    augmented(row, i);
+
+                for (size_t j = 0;
+                     j < augmented.cols;
+                     ++j) {
+                    augmented(row, j) -=
+                        factor * augmented(i, j);
+                }
             }
         }
-    }
 
-    Matrix result(rows, cols);
+        Matrix result(rows, cols);
 
-    // Extract the right half, which is A^-1.
-    for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            result(i, j) = augmented(i, j + cols);
+        // Extract the right half, which is A^-1.
+        for (size_t i = 0; i < rows; ++i) {
+            for (size_t j = 0; j < cols; ++j) {
+                result(i, j) =
+                    augmented(i, j + cols);
+            }
         }
+
+        return result;
     }
 
-    return result;
-}
     // Matrix-vector product
     std::vector<double> operator*(
         const std::vector<double>& v
@@ -243,7 +295,8 @@ Matrix inverse() const {
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                result[i] += (*this)(i, j) * v[j];
+                result[i] +=
+                    (*this)(i, j) * v[j];
             }
         }
 
@@ -252,7 +305,10 @@ Matrix inverse() const {
 
     // Matrix addition
     Matrix operator+(const Matrix& other) const {
-        if (rows != other.rows || cols != other.cols) {
+        if (
+            rows != other.rows ||
+            cols != other.cols
+        ) {
             throw std::invalid_argument(
                 "Matrix dimensions must match for addition"
             );
@@ -260,8 +316,11 @@ Matrix inverse() const {
 
         Matrix result(rows, cols);
 
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] = data[i] + other.data[i];
+        for (size_t i = 0;
+             i < data.size();
+             ++i) {
+            result.data[i] =
+                data[i] + other.data[i];
         }
 
         return result;
@@ -269,7 +328,10 @@ Matrix inverse() const {
 
     // Matrix subtraction
     Matrix operator-(const Matrix& other) const {
-        if (rows != other.rows || cols != other.cols) {
+        if (
+            rows != other.rows ||
+            cols != other.cols
+        ) {
             throw std::invalid_argument(
                 "Matrix dimensions must match for subtraction"
             );
@@ -277,8 +339,11 @@ Matrix inverse() const {
 
         Matrix result(rows, cols);
 
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] = data[i] - other.data[i];
+        for (size_t i = 0;
+             i < data.size();
+             ++i) {
+            result.data[i] =
+                data[i] - other.data[i];
         }
 
         return result;
@@ -286,13 +351,18 @@ Matrix inverse() const {
 
     // In-place matrix addition
     Matrix& operator+=(const Matrix& other) {
-        if (rows != other.rows || cols != other.cols) {
+        if (
+            rows != other.rows ||
+            cols != other.cols
+        ) {
             throw std::invalid_argument(
                 "Matrix dimensions must match for addition"
             );
         }
 
-        for (size_t i = 0; i < data.size(); ++i) {
+        for (size_t i = 0;
+             i < data.size();
+             ++i) {
             data[i] += other.data[i];
         }
 
@@ -301,13 +371,18 @@ Matrix inverse() const {
 
     // In-place matrix subtraction
     Matrix& operator-=(const Matrix& other) {
-        if (rows != other.rows || cols != other.cols) {
+        if (
+            rows != other.rows ||
+            cols != other.cols
+        ) {
             throw std::invalid_argument(
                 "Matrix dimensions must match for subtraction"
             );
         }
 
-        for (size_t i = 0; i < data.size(); ++i) {
+        for (size_t i = 0;
+             i < data.size();
+             ++i) {
             data[i] -= other.data[i];
         }
 
@@ -322,14 +397,22 @@ Matrix inverse() const {
             );
         }
 
-        Matrix result(rows, other.cols, 0.0);
+        Matrix result(
+            rows,
+            other.cols,
+            0.0
+        );
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t k = 0; k < cols; ++k) {
-                const double value = (*this)(i, k);
+                const double value =
+                    (*this)(i, k);
 
-                for (size_t j = 0; j < other.cols; ++j) {
-                    result(i, j) += value * other(k, j);
+                for (size_t j = 0;
+                     j < other.cols;
+                     ++j) {
+                    result(i, j) +=
+                        value * other(k, j);
                 }
             }
         }
@@ -341,8 +424,11 @@ Matrix inverse() const {
     Matrix operator*(double scalar) const {
         Matrix result(rows, cols);
 
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] = data[i] * scalar;
+        for (size_t i = 0;
+             i < data.size();
+             ++i) {
+            result.data[i] =
+                data[i] * scalar;
         }
 
         return result;
@@ -351,13 +437,18 @@ Matrix inverse() const {
     // Scalar division
     Matrix operator/(double scalar) const {
         if (std::abs(scalar) < 1e-12) {
-            throw std::invalid_argument("Division by zero");
+            throw std::invalid_argument(
+                "Division by zero"
+            );
         }
 
         Matrix result(rows, cols);
 
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] = data[i] / scalar;
+        for (size_t i = 0;
+             i < data.size();
+             ++i) {
+            result.data[i] =
+                data[i] / scalar;
         }
 
         return result;
@@ -375,7 +466,9 @@ Matrix inverse() const {
     // In-place scalar division
     Matrix& operator/=(double scalar) {
         if (std::abs(scalar) < 1e-12) {
-            throw std::invalid_argument("Division by zero");
+            throw std::invalid_argument(
+                "Division by zero"
+            );
         }
 
         for (auto& value : data) {
@@ -390,7 +483,8 @@ Matrix inverse() const {
         std::ostream& os = std::cout,
         int precision = 4
     ) const {
-        os << std::fixed << std::setprecision(precision);
+        os << std::fixed
+           << std::setprecision(precision);
 
         for (size_t i = 0; i < rows; ++i) {
             os << "[ ";
@@ -437,7 +531,10 @@ Matrix inverse() const {
         Matrix result(r, c);
 
         std::mt19937 gen(seed);
-        std::uniform_real_distribution<double> dist(low, high);
+        std::uniform_real_distribution<double> dist(
+            low,
+            high
+        );
 
         for (auto& value : result.data) {
             value = dist(gen);
@@ -461,7 +558,9 @@ inline double euclidean_distance(
     double sum = 0.0;
 
     for (size_t i = 0; i < a.size(); ++i) {
-        const double difference = a[i] - b[i];
+        const double difference =
+            a[i] - b[i];
+
         sum += difference * difference;
     }
 

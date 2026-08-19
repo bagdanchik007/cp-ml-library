@@ -7,7 +7,7 @@
  * Include this single header to get access to the whole public API.
  */
 
-#include "matrix.hpp"
+#include "matrix/matrix.hpp"
 #include "linear_regression.hpp"
 #include "kmeans.hpp"
 

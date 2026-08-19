@@ -474,6 +474,142 @@ void test_euclidean_distance_dimension_error() {
 }
 
 } // namespace
+void test_identity_matrix() {
+    std::cout << "[TEST] Identity matrix ... ";
+
+    const Matrix identity = Matrix::identity(3);
+
+    assert(identity.rows == 3);
+    assert(identity.cols == 3);
+
+    for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 3; ++j) {
+            if (i == j) {
+                assert(identity(i, j) == 1.0);
+            } else {
+                assert(identity(i, j) == 0.0);
+            }
+        }
+    }
+
+    std::cout << "OK\n";
+}
+
+void test_identity_matrix_multiplication() {
+    std::cout << "[TEST] Identity matrix multiplication ... ";
+
+    Matrix m = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    const Matrix identity = Matrix::identity(2);
+
+    const Matrix left_result = identity * m;
+    const Matrix right_result = m * identity;
+
+    assert(left_result.rows == m.rows);
+    assert(left_result.cols == m.cols);
+
+    assert(right_result.rows == m.rows);
+    assert(right_result.cols == m.cols);
+
+    for (size_t i = 0; i < m.rows; ++i) {
+        for (size_t j = 0; j < m.cols; ++j) {
+            assert(left_result(i, j) == m(i, j));
+            assert(right_result(i, j) == m(i, j));
+        }
+    }
+
+    std::cout << "OK\n";
+}
+
+void test_determinant_1x1() {
+    std::cout << "[TEST] Determinant 1x1 ... ";
+
+    Matrix m = {
+        {5.0}
+    };
+
+    const double result = m.determinant();
+
+    assert(std::abs(result - 5.0) < 1e-9);
+
+    std::cout << "OK\n";
+}
+
+void test_determinant_2x2() {
+    std::cout << "[TEST] Determinant 2x2 ... ";
+
+    Matrix m = {
+        {4.0, 7.0},
+        {2.0, 6.0}
+    };
+
+    const double result = m.determinant();
+
+    assert(std::abs(result - 10.0) < 1e-9);
+
+    std::cout << "OK\n";
+}
+
+void test_determinant_3x3() {
+    std::cout << "[TEST] Determinant 3x3 ... ";
+
+    Matrix m = {
+        {6.0, 1.0, 1.0},
+        {4.0, -2.0, 5.0},
+        {2.0, 8.0, 7.0}
+    };
+
+    const double result = m.determinant();
+
+    assert(std::abs(result + 306.0) < 1e-9);
+
+    std::cout << "OK\n";
+}
+
+void test_determinant_non_square_error() {
+    std::cout << "[TEST] Determinant non-square validation ... ";
+
+    Matrix m = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0}
+    };
+
+    bool thrown = false;
+
+    try {
+        [[maybe_unused]] const double result =
+            m.determinant();
+    } catch (const std::invalid_argument&) {
+        thrown = true;
+    }
+
+    assert(thrown);
+
+    std::cout << "OK\n";
+
+}
+
+void test_determinant_empty_matrix_error() {
+    std::cout << "[TEST] Determinant empty matrix validation ... ";
+
+    Matrix m;
+
+    bool thrown = false;
+
+    try {
+        [[maybe_unused]] const double result =
+            m.determinant();
+    } catch (const std::invalid_argument&) {
+        thrown = true;
+    }
+
+    assert(thrown);
+
+    std::cout << "OK\n";
+}
 
 int main() {
     std::cout << "Running matrix tests...\n\n";
@@ -501,6 +637,19 @@ int main() {
 
     test_euclidean_distance();
     test_euclidean_distance_dimension_error();
+    test_euclidean_distance();
+    test_euclidean_distance_dimension_error();
+
+    // Identity matrix
+    test_identity_matrix();
+    test_identity_matrix_multiplication();
+
+    // Determinant
+    test_determinant_1x1();
+    test_determinant_2x2();
+    test_determinant_3x3();
+    test_determinant_non_square_error();
+    test_determinant_empty_matrix_error();
 
     std::cout << "\nAll matrix tests passed!\n";
 

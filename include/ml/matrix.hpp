@@ -91,6 +91,59 @@ public:
         return result;
     }
 
+    // Matrix determinant
+    double determinant() const {
+        if (rows != cols) {
+            throw std::invalid_argument(
+                "Determinant requires a square matrix"
+            );
+        }
+
+        if (rows == 0) {
+            throw std::invalid_argument(
+                "Determinant of an empty matrix is undefined"
+            );
+        }
+
+        if (rows == 1) {
+            return (*this)(0, 0);
+        }
+
+        if (rows == 2) {
+            return
+                (*this)(0, 0) * (*this)(1, 1) -
+                (*this)(0, 1) * (*this)(1, 0);
+        }
+
+        double result = 0.0;
+
+        for (size_t column = 0; column < cols; ++column) {
+            Matrix minor(rows - 1, cols - 1);
+
+            for (size_t i = 1; i < rows; ++i) {
+                size_t minor_column = 0;
+
+                for (size_t j = 0; j < cols; ++j) {
+                    if (j == column) {
+                        continue;
+                    }
+
+                    minor(i - 1, minor_column) = (*this)(i, j);
+                    ++minor_column;
+                }
+            }
+
+            const double sign =
+                (column % 2 == 0) ? 1.0 : -1.0;
+
+            result +=
+                sign *
+                (*this)(0, column) *
+                minor.determinant();
+        }
+
+        return result;
+    }
     // Matrix-vector product
     std::vector<double> operator*(
         const std::vector<double>& v

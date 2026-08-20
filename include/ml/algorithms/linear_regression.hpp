@@ -1,10 +1,10 @@
 #pragma once
 
-#include "matrix/matrix.hpp"
+#include "ml/core/matrix/matrix.hpp"
 #include <vector>
 #include <stdexcept>
 #include <cmath>
-
+#include "ml/algorithms/linear_regression.hpp"
 namespace ml {
 
 /**

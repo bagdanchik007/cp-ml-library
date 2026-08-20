@@ -1,4 +1,4 @@
-#include "ml/linear_regression.hpp"
+#include "ml/algorithms/linear_regression.hpp"
 
 #include <iostream>
 

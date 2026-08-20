@@ -11,8 +11,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # -------------------------------------------------
 
 add_library(ml_library
-    src/linear_regression.cpp
-    src/kmeans.cpp
+    src/algorithms/linear_regression.cpp
+    src/algorithms/kmeans.cpp
 )
 
 target_include_directories(ml_library
@@ -42,9 +42,12 @@ target_link_libraries(ml_demo
 
 enable_testing()
 
+# -------------------------------------------------
 # Matrix tests
+# -------------------------------------------------
+
 add_executable(matrix_tests
-    tests/matrix_tests/matrix_tests.cpp
+    tests/core/matrix/matrix_tests.cpp
 )
 
 target_link_libraries(matrix_tests
@@ -57,9 +60,12 @@ add_test(
     COMMAND matrix_tests
 )
 
+# -------------------------------------------------
 # Matrix arithmetic tests
+# -------------------------------------------------
+
 add_executable(matrix_arithmetic_tests
-    tests/matrix_tests/matrix_arithmetic_tests.cpp
+    tests/core/matrix/matrix_arithmetic_tests.cpp
 )
 
 target_link_libraries(matrix_arithmetic_tests
@@ -72,9 +78,12 @@ add_test(
     COMMAND matrix_arithmetic_tests
 )
 
+# -------------------------------------------------
 # Matrix utility tests
+# -------------------------------------------------
+
 add_executable(matrix_utility_tests
-    tests/matrix_tests/matrix_utility_tests.cpp
+    tests/core/matrix/matrix_utility_tests.cpp
 )
 
 target_link_libraries(matrix_utility_tests
@@ -87,9 +96,12 @@ add_test(
     COMMAND matrix_utility_tests
 )
 
+# -------------------------------------------------
 # Matrix validation tests
+# -------------------------------------------------
+
 add_executable(matrix_validation_tests
-    tests/matrix_tests/matrix_validation_tests.cpp
+    tests/core/matrix/matrix_validation_tests.cpp
 )
 
 target_link_libraries(matrix_validation_tests
@@ -102,9 +114,12 @@ add_test(
     COMMAND matrix_validation_tests
 )
 
+# -------------------------------------------------
 # Linear Regression tests
+# -------------------------------------------------
+
 add_executable(linear_regression_tests
-    tests/linear_regression_tests.cpp
+    tests/algorithms/linear_regression_tests.cpp
 )
 
 target_link_libraries(linear_regression_tests
@@ -117,9 +132,12 @@ add_test(
     COMMAND linear_regression_tests
 )
 
+# -------------------------------------------------
 # K-Means tests
+# -------------------------------------------------
+
 add_executable(kmeans_tests
-    tests/kmeans_tests.cpp
+    tests/algorithms/kmeans_tests.cpp
 )
 
 target_link_libraries(kmeans_tests

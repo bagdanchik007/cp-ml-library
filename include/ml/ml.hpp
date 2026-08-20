@@ -1,15 +1,14 @@
 #pragma once
-
 /**
  * @file ml.hpp
  * @brief Main umbrella header for the Cpp ML Library.
  */
 
-#include "matrix/matrix.hpp"          // pulls in matrix_operations.hpp automatically
-#include "matrix/matrix_utility.hpp"  // optional free utilities (currently empty)
+#include "core/matrix/matrix.hpp"
+#include "core/matrix/matrix_utility.hpp"
 
-#include "linear_regression.hpp"
-#include "kmeans.hpp"
+#include "algorithms/linear_regression.hpp"
+#include "algorithms/kmeans.hpp"
 
 namespace ml {
 constexpr int VERSION_MAJOR = 1;

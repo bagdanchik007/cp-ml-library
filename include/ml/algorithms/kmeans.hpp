@@ -1,11 +1,12 @@
 #pragma once
 
-#include "matrix/matrix.hpp"
-#include "matrix/matrix_utility.hpp"
+#include "ml/core/matrix/matrix.hpp"
+#include "ml/core/matrix/matrix_utility.hpp"
 #include <vector>
 #include <random>
 #include <limits>
 #include <stdexcept>
+#include "ml/algorithms/kmeans.hpp"
 
 namespace ml {
 

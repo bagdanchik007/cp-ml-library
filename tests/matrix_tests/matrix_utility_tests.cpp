@@ -158,6 +158,31 @@ void test_matrix_determinant() {
     std::cout << "OK\n";
 }
 
+void test_matrix_inverse() {
+    std::cout << "[TEST] Matrix inverse ... ";
+
+    const Matrix matrix = {
+        {4.0, 7.0},
+        {2.0, 6.0}
+    };
+
+    const Matrix inverse = matrix.inverse();
+
+    assert(std::abs(inverse(0, 0) - 0.6) < 1e-9);
+    assert(std::abs(inverse(0, 1) - (-0.7)) < 1e-9);
+    assert(std::abs(inverse(1, 0) - (-0.2)) < 1e-9);
+    assert(std::abs(inverse(1, 1) - 0.4) < 1e-9);
+
+    const Matrix identity = matrix * inverse;
+
+    assert(std::abs(identity(0, 0) - 1.0) < 1e-9);
+    assert(std::abs(identity(0, 1)) < 1e-9);
+    assert(std::abs(identity(1, 0)) < 1e-9);
+    assert(std::abs(identity(1, 1) - 1.0) < 1e-9);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -169,7 +194,7 @@ int main() {
     test_identity_matrix();
     test_identity_matrix_multiplication();
     test_matrix_determinant();
-    
+    test_matrix_inverse();
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

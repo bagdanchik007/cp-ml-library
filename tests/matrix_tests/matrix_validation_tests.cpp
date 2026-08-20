@@ -172,6 +172,44 @@ void test_matrix_row_validation() {
     std::cout << "OK\n";
 }
 
+void test_matrix_inverse_validation() {
+    std::cout << "[TEST] Matrix inverse validation ... ";
+
+    const Matrix non_square = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0}
+    };
+
+    bool non_square_thrown = false;
+
+    try {
+        [[maybe_unused]] const Matrix result =
+            non_square.inverse();
+    } catch (const std::invalid_argument&) {
+        non_square_thrown = true;
+    }
+
+    assert(non_square_thrown);
+
+    const Matrix singular = {
+        {1.0, 2.0},
+        {2.0, 4.0}
+    };
+
+    bool singular_thrown = false;
+
+    try {
+        [[maybe_unused]] const Matrix result =
+            singular.inverse();
+    } catch (const std::invalid_argument&) {
+        singular_thrown = true;
+    }
+
+    assert(singular_thrown);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -181,7 +219,7 @@ int main() {
     test_scalar_division_by_zero();
     test_matrix_index_validation();
     test_matrix_row_validation();
-
+    test_matrix_inverse_validation();
     std::cout << "\nAll matrix validation tests passed!\n";
 
     return 0;

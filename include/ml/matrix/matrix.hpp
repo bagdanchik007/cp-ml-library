@@ -29,8 +29,9 @@ public:
     const double& operator()(size_t i, size_t j) const;
     std::vector<double> row(size_t i) const;
     void set_row(size_t i, const std::vector<double>& values);
-
+    // Get a column as a vector 
     std::vector<double> column(size_t j) const;
+    void set_column(size_t j,const std::vector<double>& values );
 
     Matrix transpose() const; 
     // Get the trace of the matrix (sum of diagonal elements)

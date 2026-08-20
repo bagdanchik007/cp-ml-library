@@ -45,6 +45,9 @@ public:
     Matrix& operator+=(const Matrix& other);
     Matrix& operator-=(const Matrix& other);
     Matrix operator*(const Matrix& other) const;
+    // Comparison
+    bool operator==(const Matrix& other) const;
+    bool operator!=(const Matrix& other) const;
 
     // Scalar
     Matrix operator*(double scalar) const;

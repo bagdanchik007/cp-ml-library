@@ -179,6 +179,47 @@ void test_inplace_scalar_operations() {
     std::cout << "OK\n";
 }
 
+void test_matrix_comparison() {
+    std::cout << "[TEST] Matrix comparison ... ";
+
+    const Matrix a = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    const Matrix b = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    const Matrix c = {
+        {1.0, 2.0},
+        {3.0, 5.0}
+    };
+
+    const Matrix d = {
+        {1.0, 2.0, 3.0}
+    };
+
+    assert(a == b);
+    assert(!(a != b));
+
+    assert(a != c);
+    assert(!(a == c));
+
+    assert(a != d);
+    assert(!(a == d));
+
+    const Matrix almost_equal = {
+        {1.0 + 1e-10, 2.0},
+        {3.0, 4.0}
+    };
+
+    assert(a == almost_equal);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -193,7 +234,7 @@ int main() {
 
     test_scalar_operations();
     test_inplace_scalar_operations();
-
+    test_matrix_comparison();
     std::cout << "\nAll matrix arithmetic tests passed!\n";
 
     return 0;

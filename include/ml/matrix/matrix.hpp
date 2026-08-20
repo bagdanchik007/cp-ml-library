@@ -1,22 +1,17 @@
 #pragma once
 
-#include <algorithm>
-#include <cmath>
 #include <cstddef>
-#include <iomanip>
 #include <initializer_list>
 #include <iostream>
-#include <random>
-#include <stdexcept>
 #include <vector>
 
 namespace ml {
 
 /**
- * @brief Lightweight dense matrix class for educational / portfolio ML library.
+ * @brief Lightweight dense matrix class.
  *
- * Designed for clarity and correctness rather than maximum performance.
- * For production workloads prefer Eigen or similar.
+ * Declaration only. All implementations live in matrix_operations.hpp
+ * (included at the bottom of this file – classic header-only style).
  */
 class Matrix {
 public:
@@ -26,500 +21,49 @@ public:
 
     Matrix() = default;
 
-    Matrix(size_t r, size_t c, double fill = 0.0)
-        : rows(r), cols(c), data(r * c, fill) {}
+    Matrix(size_t r, size_t c, double fill = 0.0);
 
-    Matrix(std::initializer_list<std::initializer_list<double>> init) {
-        rows = init.size();
+    Matrix(std::initializer_list<std::initializer_list<double>> init);
 
-        if (rows == 0) {
-            cols = 0;
-            return;
-        }
+    double& operator()(size_t i, size_t j);
+    const double& operator()(size_t i, size_t j) const;
 
-        cols = init.begin()->size();
-        data.reserve(rows * cols);
+    std::vector<double> row(size_t i) const;
+    void set_row(size_t i, const std::vector<double>& values);
 
-        for (const auto& row : init) {
-            if (row.size() != cols) {
-                throw std::invalid_argument(
-                    "All rows must have the same length"
-                );
-            }
+    Matrix transpose() const;
 
-            data.insert(data.end(), row.begin(), row.end());
-        }
-    }
+    double determinant() const;
+    Matrix inverse() const;
 
-    double& operator()(size_t i, size_t j) {
-        if (i >= rows || j >= cols) {
-            throw std::out_of_range(
-                "Matrix index out of bounds"
-            );
-        }
+    // Matrix-vector
+    std::vector<double> operator*(const std::vector<double>& v) const;
 
-        return data[i * cols + j];
-    }
+    // Matrix-Matrix
+    Matrix operator+(const Matrix& other) const;
+    Matrix operator-(const Matrix& other) const;
+    Matrix& operator+=(const Matrix& other);
+    Matrix& operator-=(const Matrix& other);
+    Matrix operator*(const Matrix& other) const;
 
-    const double& operator()(size_t i, size_t j) const {
-        if (i >= rows || j >= cols) {
-            throw std::out_of_range(
-                "Matrix index out of bounds"
-            );
-        }
+    // Scalar
+    Matrix operator*(double scalar) const;
+    Matrix operator/(double scalar) const;
+    Matrix& operator*=(double scalar);
+    Matrix& operator/=(double scalar);
 
-        return data[i * cols + j];
-    }
+    void print(std::ostream& os = std::cout, int precision = 4) const;
 
-    std::vector<double> row(size_t i) const {
-        if (i >= rows) {
-            throw std::out_of_range(
-                "Matrix row index out of bounds"
-            );
-        }
-
-        return std::vector<double>(
-            data.begin() + i * cols,
-            data.begin() + (i + 1) * cols
-        );
-    }
-
-    void set_row(
-        size_t i,
-        const std::vector<double>& values
-    ) {
-        if (i >= rows) {
-            throw std::out_of_range(
-                "Matrix row index out of bounds"
-            );
-        }
-
-        if (values.size() != cols) {
-            throw std::invalid_argument(
-                "Row size mismatch"
-            );
-        }
-
-        std::copy(
-            values.begin(),
-            values.end(),
-            data.begin() + i * cols
-        );
-    }
-
-    Matrix transpose() const {
-        Matrix result(cols, rows);
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result(j, i) = (*this)(i, j);
-            }
-        }
-
-        return result;
-    }
-
-    double determinant() const {
-        if (rows != cols) {
-            throw std::invalid_argument(
-                "Determinant requires a square matrix"
-            );
-        }
-
-        if (rows == 0) {
-            throw std::invalid_argument(
-                "Determinant of an empty matrix is undefined"
-            );
-        }
-
-        if (rows == 1) {
-            return (*this)(0, 0);
-        }
-
-        if (rows == 2) {
-            return
-                (*this)(0, 0) * (*this)(1, 1) -
-                (*this)(0, 1) * (*this)(1, 0);
-        }
-
-        double result = 0.0;
-
-        for (size_t column = 0; column < cols; ++column) {
-            Matrix minor(rows - 1, cols - 1);
-
-            for (size_t i = 1; i < rows; ++i) {
-                size_t minor_column = 0;
-
-                for (size_t j = 0; j < cols; ++j) {
-                    if (j == column) {
-                        continue;
-                    }
-
-                    minor(i - 1, minor_column) =
-                        (*this)(i, j);
-
-                    ++minor_column;
-                }
-            }
-
-            const double sign =
-                (column % 2 == 0) ? 1.0 : -1.0;
-
-            result +=
-                sign *
-                (*this)(0, column) *
-                minor.determinant();
-        }
-
-        return result;
-    }
-
-    Matrix inverse() const {
-        if (rows != cols) {
-            throw std::invalid_argument(
-                "Inverse requires a square matrix"
-            );
-        }
-
-        if (rows == 0) {
-            throw std::invalid_argument(
-                "Inverse of an empty matrix is undefined"
-            );
-        }
-
-        Matrix augmented(rows, cols * 2);
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                augmented(i, j) = (*this)(i, j);
-
-                augmented(i, j + cols) =
-                    (i == j) ? 1.0 : 0.0;
-            }
-        }
-
-        for (size_t i = 0; i < rows; ++i) {
-            size_t pivot_row = i;
-
-            for (size_t row = i + 1; row < rows; ++row) {
-                if (
-                    std::abs(augmented(row, i)) >
-                    std::abs(augmented(pivot_row, i))
-                ) {
-                    pivot_row = row;
-                }
-            }
-
-            if (
-                std::abs(augmented(pivot_row, i)) <
-                1e-12
-            ) {
-                throw std::invalid_argument(
-                    "Matrix is singular and cannot be inverted"
-                );
-            }
-
-            if (pivot_row != i) {
-                for (size_t j = 0;
-                     j < augmented.cols;
-                     ++j) {
-                    std::swap(
-                        augmented(i, j),
-                        augmented(pivot_row, j)
-                    );
-                }
-            }
-
-            const double pivot = augmented(i, i);
-
-            for (size_t j = 0;
-                 j < augmented.cols;
-                 ++j) {
-                augmented(i, j) /= pivot;
-            }
-
-            for (size_t row = 0;
-                 row < rows;
-                 ++row) {
-                if (row == i) {
-                    continue;
-                }
-
-                const double factor =
-                    augmented(row, i);
-
-                for (size_t j = 0;
-                     j < augmented.cols;
-                     ++j) {
-                    augmented(row, j) -=
-                        factor * augmented(i, j);
-                }
-            }
-        }
-
-        Matrix result(rows, cols);
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result(i, j) =
-                    augmented(i, j + cols);
-            }
-        }
-
-        return result;
-    }
-
-    std::vector<double> operator*(
-        const std::vector<double>& v
-    ) const {
-        if (cols != v.size()) {
-            throw std::invalid_argument(
-                "Matrix-vector dimension mismatch"
-            );
-        }
-
-        std::vector<double> result(rows, 0.0);
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t j = 0; j < cols; ++j) {
-                result[i] +=
-                    (*this)(i, j) * v[j];
-            }
-        }
-
-        return result;
-    }
-
-    Matrix operator+(const Matrix& other) const {
-        if (
-            rows != other.rows ||
-            cols != other.cols
-        ) {
-            throw std::invalid_argument(
-                "Matrix dimensions must match for addition"
-            );
-        }
-
-        Matrix result(rows, cols);
-
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] =
-                data[i] + other.data[i];
-        }
-
-        return result;
-    }
-
-    Matrix operator-(const Matrix& other) const {
-        if (
-            rows != other.rows ||
-            cols != other.cols
-        ) {
-            throw std::invalid_argument(
-                "Matrix dimensions must match for subtraction"
-            );
-        }
-
-        Matrix result(rows, cols);
-
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] =
-                data[i] - other.data[i];
-        }
-
-        return result;
-    }
-
-    Matrix& operator+=(const Matrix& other) {
-        if (
-            rows != other.rows ||
-            cols != other.cols
-        ) {
-            throw std::invalid_argument(
-                "Matrix dimensions must match for addition"
-            );
-        }
-
-        for (size_t i = 0; i < data.size(); ++i) {
-            data[i] += other.data[i];
-        }
-
-        return *this;
-    }
-
-    Matrix& operator-=(const Matrix& other) {
-        if (
-            rows != other.rows ||
-            cols != other.cols
-        ) {
-            throw std::invalid_argument(
-                "Matrix dimensions must match for subtraction"
-            );
-        }
-
-        for (size_t i = 0; i < data.size(); ++i) {
-            data[i] -= other.data[i];
-        }
-
-        return *this;
-    }
-
-    Matrix operator*(const Matrix& other) const {
-        if (cols != other.rows) {
-            throw std::invalid_argument(
-                "Matrix dimensions incompatible for multiplication"
-            );
-        }
-
-        Matrix result(rows, other.cols, 0.0);
-
-        for (size_t i = 0; i < rows; ++i) {
-            for (size_t k = 0; k < cols; ++k) {
-                const double value = (*this)(i, k);
-
-                for (size_t j = 0;
-                     j < other.cols;
-                     ++j) {
-                    result(i, j) +=
-                        value * other(k, j);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    Matrix operator*(double scalar) const {
-        Matrix result(rows, cols);
-
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] =
-                data[i] * scalar;
-        }
-
-        return result;
-    }
-
-    Matrix operator/(double scalar) const {
-        if (std::abs(scalar) < 1e-12) {
-            throw std::invalid_argument(
-                "Division by zero"
-            );
-        }
-
-        Matrix result(rows, cols);
-
-        for (size_t i = 0; i < data.size(); ++i) {
-            result.data[i] =
-                data[i] / scalar;
-        }
-
-        return result;
-    }
-
-    Matrix& operator*=(double scalar) {
-        for (auto& value : data) {
-            value *= scalar;
-        }
-
-        return *this;
-    }
-
-    Matrix& operator/=(double scalar) {
-        if (std::abs(scalar) < 1e-12) {
-            throw std::invalid_argument(
-                "Division by zero"
-            );
-        }
-
-        for (auto& value : data) {
-            value /= scalar;
-        }
-
-        return *this;
-    }
-
-    void print(
-        std::ostream& os = std::cout,
-        int precision = 4
-    ) const {
-        os << std::fixed
-           << std::setprecision(precision);
-
-        for (size_t i = 0; i < rows; ++i) {
-            os << "[ ";
-
-            for (size_t j = 0; j < cols; ++j) {
-                os << std::setw(8)
-                   << (*this)(i, j)
-                   << " ";
-            }
-
-            os << "]\n";
-        }
-    }
-
-    static Matrix zeros(size_t r, size_t c) {
-        return Matrix(r, c, 0.0);
-    }
-
-    static Matrix ones(size_t r, size_t c) {
-        return Matrix(r, c, 1.0);
-    }
-
-    static Matrix identity(size_t size) {
-        Matrix result(size, size, 0.0);
-
-        for (size_t i = 0; i < size; ++i) {
-            result(i, i) = 1.0;
-        }
-
-        return result;
-    }
-
-    static Matrix random(
-        size_t r,
-        size_t c,
-        double low = -1.0,
-        double high = 1.0,
-        unsigned seed = 42
-    ) {
-        Matrix result(r, c);
-
-        std::mt19937 gen(seed);
-        std::uniform_real_distribution<double> dist(
-            low,
-            high
-        );
-
-        for (auto& value : result.data) {
-            value = dist(gen);
-        }
-
-        return result;
-    }
+    // Factory methods
+    static Matrix zeros(size_t r, size_t c);
+    static Matrix ones(size_t r, size_t c);
+    static Matrix identity(size_t size);
+    static Matrix random(size_t r, size_t c,
+                         double low = -1.0, double high = 1.0,
+                         unsigned seed = 42);
 };
 
-inline double euclidean_distance(
-    const std::vector<double>& a,
-    const std::vector<double>& b
-) {
-    if (a.size() != b.size()) {
-        throw std::invalid_argument(
-            "Vectors must have same dimension"
-        );
-    }
-
-    double sum = 0.0;
-
-    for (size_t i = 0; i < a.size(); ++i) {
-        const double difference =
-            a[i] - b[i];
-
-        sum += difference * difference;
-    }
-
-    return std::sqrt(sum);
-}
-
 } // namespace ml
+
+// Implementation (header-only)
+#include "matrix_operations.hpp"

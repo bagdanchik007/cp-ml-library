@@ -94,6 +94,25 @@ void test_matrix_vector_multiplication() {
     std::cout << "OK\n";
 }
 
+void test_column_operations() {
+    std::cout << "[TEST] Column operations ... ";
+
+    Matrix m = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0},
+        {7.0, 8.0, 9.0}
+    };
+
+    const auto column = m.column(1);
+
+    assert(column.size() == 3);
+    assert(column[0] == 2.0);
+    assert(column[1] == 5.0);
+    assert(column[2] == 8.0);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -103,6 +122,7 @@ int main() {
     test_matrix_element_access();
     test_matrix_transpose();
     test_matrix_vector_multiplication();
+    test_column_operations();
 
     std::cout << "\nAll matrix tests passed!\n";
 

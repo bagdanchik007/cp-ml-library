@@ -30,9 +30,11 @@ public:
 
     std::vector<double> row(size_t i) const;
     void set_row(size_t i, const std::vector<double>& values);
-
+    // Get a column as a vector
     Matrix transpose() const;
-
+    // Get the trace of the matrix (sum of diagonal elements)
+    double trace() const;
+    // Get the determinant of the matrix (only for square matrices)
     double determinant() const;
     Matrix inverse() const;
 

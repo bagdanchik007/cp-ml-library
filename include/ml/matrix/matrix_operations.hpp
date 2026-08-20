@@ -199,7 +199,25 @@ inline double Matrix::determinant() const {
 
     return result;
 }
+// ============================================================
+// Trace
+// ============================================================
 
+inline double Matrix::trace() const {
+    if (rows != cols) {
+        throw std::invalid_argument(
+            "Trace requires a square matrix"
+        );
+    }
+
+    double result = 0.0;
+
+    for (size_t i = 0; i < rows; ++i) {
+        result += (*this)(i, i);
+    }
+
+    return result;
+}
 // ============================================================
 // Matrix inverse
 // ============================================================

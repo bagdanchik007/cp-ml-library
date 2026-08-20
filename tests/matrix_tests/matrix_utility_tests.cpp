@@ -219,6 +219,49 @@ void test_euclidean_distance() {
     std::cout << "OK\n";
 }
 
+void test_matrix_trace() {
+    std::cout << "[TEST] Matrix trace ... ";
+
+    const Matrix matrix = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0},
+        {7.0, 8.0, 9.0}
+    };
+
+    assert(matrix.trace() == 15.0);
+
+    const Matrix matrix_2x2 = {
+        {4.0, 2.0},
+        {1.0, 7.0}
+    };
+
+    assert(matrix_2x2.trace() == 11.0);
+
+    const Matrix matrix_1x1 = {
+        {42.0}
+    };
+
+    assert(matrix_1x1.trace() == 42.0);
+
+    bool exception_thrown = false;
+
+    const Matrix non_square = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0}
+    };
+
+    try {
+        [[maybe_unused]] const double result =
+            non_square.trace();
+    } catch (const std::invalid_argument&) {
+        exception_thrown = true;
+    }
+
+    assert(exception_thrown);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -232,6 +275,7 @@ int main() {
     test_matrix_determinant();
     test_matrix_inverse();
     test_euclidean_distance();
+    test_matrix_trace();
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

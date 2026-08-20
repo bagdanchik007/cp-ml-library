@@ -131,6 +131,33 @@ void test_identity_matrix_multiplication() {
     std::cout << "OK\n";
 }
 
+void test_matrix_determinant() {
+    std::cout << "[TEST] Matrix determinant ... ";
+
+    const Matrix matrix_2x2 = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    assert(matrix_2x2.determinant() == -2.0);
+
+    const Matrix matrix_3x3 = {
+        {1.0, 2.0, 3.0},
+        {0.0, 1.0, 4.0},
+        {5.0, 6.0, 0.0}
+    };
+
+    assert(matrix_3x3.determinant() == 1.0);
+
+    const Matrix matrix_1x1 = {
+        {7.0}
+    };
+
+    assert(matrix_1x1.determinant() == 7.0);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -141,7 +168,8 @@ int main() {
     test_random_matrix();
     test_identity_matrix();
     test_identity_matrix_multiplication();
-
+    test_matrix_determinant();
+    
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

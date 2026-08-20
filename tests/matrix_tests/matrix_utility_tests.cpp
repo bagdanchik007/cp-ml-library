@@ -183,6 +183,42 @@ void test_matrix_inverse() {
     std::cout << "OK\n";
 }
 
+void test_euclidean_distance() {
+    std::cout << "[TEST] Euclidean distance ... ";
+
+    const std::vector<double> a = {
+        0.0,
+        0.0
+    };
+
+    const std::vector<double> b = {
+        3.0,
+        4.0
+    };
+
+    const double distance = euclidean_distance(a, b);
+
+    assert(std::abs(distance - 5.0) < 1e-9);
+
+    const std::vector<double> c = {
+        1.0,
+        2.0,
+        3.0
+    };
+
+    const std::vector<double> d = {
+        1.0,
+        2.0,
+        3.0
+    };
+
+    assert(std::abs(
+        euclidean_distance(c, d)
+    ) < 1e-9);
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -195,6 +231,7 @@ int main() {
     test_identity_matrix_multiplication();
     test_matrix_determinant();
     test_matrix_inverse();
+    test_euclidean_distance();
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

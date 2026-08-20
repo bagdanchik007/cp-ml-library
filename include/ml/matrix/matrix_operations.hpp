@@ -403,6 +403,40 @@ inline Matrix Matrix::operator-(
 }
 
 // ============================================================
+// Matrix comparison
+// ============================================================
+
+inline bool Matrix::operator==(
+    const Matrix& other
+) const {
+    constexpr double epsilon = 1e-9;
+
+    if (
+        rows != other.rows ||
+        cols != other.cols
+    ) {
+        return false;
+    }
+
+    for (size_t i = 0; i < data.size(); ++i) {
+        if (
+            std::abs(data[i] - other.data[i]) >
+            epsilon
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+inline bool Matrix::operator!=(
+    const Matrix& other
+) const {
+    return !(*this == other);
+}
+
+// ============================================================
 // In-place addition
 // ============================================================
 
@@ -643,40 +677,6 @@ inline void Matrix::print(
 
         os << "]\n";
     }
-}
-
-// ============================================================
-// Matrix comparison
-// ============================================================
-
-inline bool Matrix::operator==(
-    const Matrix& other
-) const {
-    constexpr double epsilon = 1e-9;
-
-    if (
-        rows != other.rows ||
-        cols != other.cols
-    ) {
-        return false;
-    }
-
-    for (size_t i = 0; i < data.size(); ++i) {
-        if (
-            std::abs(data[i] - other.data[i]) >
-            epsilon
-        ) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-inline bool Matrix::operator!=(
-    const Matrix& other
-) const {
-    return !(*this == other);
 }
 
 } // namespace ml

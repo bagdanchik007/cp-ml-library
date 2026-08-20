@@ -72,7 +72,7 @@ public:
     Matrix operator/(double scalar) const;
     Matrix& operator*=(double scalar);
     Matrix& operator/=(double scalar);
-    /
+
     // Output
     void print(
         std::ostream& os = std::cout,

@@ -27,11 +27,12 @@ public:
 
     double& operator()(size_t i, size_t j);
     const double& operator()(size_t i, size_t j) const;
-
     std::vector<double> row(size_t i) const;
     void set_row(size_t i, const std::vector<double>& values);
-    // Get a column as a vector
-    Matrix transpose() const;
+
+    std::vector<double> column(size_t j) const;
+
+    Matrix transpose() const; 
     // Get the trace of the matrix (sum of diagonal elements)
     double trace() const;
     // Get the determinant of the matrix (only for square matrices)

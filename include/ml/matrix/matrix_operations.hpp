@@ -124,6 +124,28 @@ inline void Matrix::set_row(
         data.begin() + i * cols
     );
 }
+// ============================================================
+// Column operations
+// ============================================================
+
+inline std::vector<double> Matrix::column(
+    size_t j
+) const {
+    if (j >= cols) {
+        throw std::out_of_range(
+            "Matrix column index out of bounds"
+        );
+    }
+
+    std::vector<double> result;
+    result.reserve(rows);
+
+    for (size_t i = 0; i < rows; ++i) {
+        result.push_back((*this)(i, j));
+    }
+
+    return result;
+}
 
 // ============================================================
 // Transpose

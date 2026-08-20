@@ -32,10 +32,12 @@ public:
     // Row and column operations
     std::vector<double> row(size_t i) const;
     void set_row(size_t i, const std::vector<double>& values);
+    void swap_rows(size_t first, size_t second);
 
     std::vector<double> column(size_t j) const;
     void set_column(size_t j, const std::vector<double>& values);
-
+    void swap_columns(size_t first, size_t second);
+    
     // Matrix transformations
     Matrix transpose() const;
 
@@ -59,17 +61,18 @@ public:
     Matrix& operator+=(const Matrix& other);
     Matrix& operator-=(const Matrix& other);
     Matrix operator*(const Matrix& other) const;
-
+    Matrix hadamard(const Matrix& other) const;
+    
     // Comparison
     bool operator==(const Matrix& other) const;
     bool operator!=(const Matrix& other) const;
-
+    
     // Scalar operations
     Matrix operator*(double scalar) const;
     Matrix operator/(double scalar) const;
     Matrix& operator*=(double scalar);
     Matrix& operator/=(double scalar);
-
+    /
     // Output
     void print(
         std::ostream& os = std::cout,

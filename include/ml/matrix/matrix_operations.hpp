@@ -258,6 +258,7 @@ inline double Matrix::max() const {
         data.end()
     );
 }
+
 // ============================================================
 // Determinant
 // ============================================================
@@ -634,6 +635,31 @@ inline Matrix Matrix::operator*(
                     value * other(k, j);
             }
         }
+    }
+
+    return result;
+}
+// ============================================================
+// Hadamard product (element-wise multiplication)
+// ============================================================
+
+inline Matrix Matrix::hadamard(
+    const Matrix& other
+) const {
+    if (
+        rows != other.rows ||
+        cols != other.cols
+    ) {
+        throw std::invalid_argument(
+            "Matrix dimensions must match for Hadamard product"
+        );
+    }
+
+    Matrix result(rows, cols);
+
+    for (size_t i = 0; i < data.size(); ++i) {
+        result.data[i] =
+            data[i] * other.data[i];
     }
 
     return result;

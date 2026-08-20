@@ -127,6 +127,32 @@ inline void Matrix::set_row(
 }
 
 // ============================================================
+// Row swapping
+// ============================================================
+
+inline void Matrix::swap_rows(
+    size_t first,
+    size_t second
+) {
+    if (first >= rows || second >= rows) {
+        throw std::out_of_range(
+            "Matrix row index out of bounds"
+        );
+    }
+
+    if (first == second) {
+        return;
+    }
+
+    for (size_t j = 0; j < cols; ++j) {
+        std::swap(
+            (*this)(first, j),
+            (*this)(second, j)
+        );
+    }
+}
+
+// ============================================================
 // Column operations
 // ============================================================
 
@@ -185,7 +211,53 @@ inline Matrix Matrix::transpose() const {
 
     return result;
 }
+// ============================================================
+// Statistical operations
+// ============================================================
+// Sum, mean, min, max
+inline double Matrix::sum() const {
+    return std::accumulate(
+        data.begin(),
+        data.end(),
+        0.0
+    );
+}
+// Mean, min, max
+inline double Matrix::mean() const {
+    if (data.empty()) {
+        throw std::invalid_argument(
+            "Mean of an empty matrix is undefined"
+        );
+    }
 
+    return sum() / static_cast<double>(data.size());
+}
+// Min, max
+inline double Matrix::min() const {
+    if (data.empty()) {
+        throw std::invalid_argument(
+            "Minimum of an empty matrix is undefined"
+        );
+    }
+
+    return *std::min_element(
+        data.begin(),
+        data.end()
+    );
+}
+// Max
+inline double Matrix::max() const {
+    if (data.empty()) {
+        throw std::invalid_argument(
+            "Maximum of an empty matrix is undefined"
+        );
+    }
+
+    return *std::max_element(
+        data.begin(),
+        data.end()
+    );
+}
 // ============================================================
 // Determinant
 // ============================================================

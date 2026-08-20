@@ -1,8 +1,9 @@
 #pragma once
 
 #include <algorithm>
-#include <iomanip>
 #include <cmath>
+#include <iomanip>
+#include <numeric>
 #include <random>
 #include <stdexcept>
 
@@ -124,6 +125,7 @@ inline void Matrix::set_row(
         data.begin() + i * cols
     );
 }
+
 // ============================================================
 // Column operations
 // ============================================================
@@ -145,6 +147,27 @@ inline std::vector<double> Matrix::column(
     }
 
     return result;
+}
+
+inline void Matrix::set_column(
+    size_t j,
+    const std::vector<double>& values
+) {
+    if (j >= cols) {
+        throw std::out_of_range(
+            "Matrix column index out of bounds"
+        );
+    }
+
+    if (values.size() != rows) {
+        throw std::invalid_argument(
+            "Column size mismatch"
+        );
+    }
+
+    for (size_t i = 0; i < rows; ++i) {
+        (*this)(i, j) = values[i];
+    }
 }
 
 // ============================================================
@@ -221,6 +244,7 @@ inline double Matrix::determinant() const {
 
     return result;
 }
+
 // ============================================================
 // Trace
 // ============================================================
@@ -240,6 +264,7 @@ inline double Matrix::trace() const {
 
     return result;
 }
+
 // ============================================================
 // Matrix inverse
 // ============================================================

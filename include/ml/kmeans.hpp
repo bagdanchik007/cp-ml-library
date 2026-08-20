@@ -1,6 +1,7 @@
 #pragma once
 
 #include "matrix/matrix.hpp"
+#include "matrix/matrix_utility.hpp"
 #include <vector>
 #include <random>
 #include <limits>

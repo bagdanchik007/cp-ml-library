@@ -32,6 +32,12 @@ add_library(ml_library
     include/ml/core/matrix/operations/matrix_scalar.hpp
     include/ml/core/matrix/operations/matrix_factory.hpp
     include/ml/core/matrix/operations/matrix_io.hpp
+    include/ml/core/matrix/operations/matrix_utility.hpp
+    include/ml/core/matrix/operations/matrix_comparison.hpp
+    include/ml/core/matrix/operations/matrix_slicing.hpp
+
+    # Matrix internals
+    include/ml/core/matrix/detail/matrix_validation.hpp
 )
 
 target_include_directories(
@@ -165,6 +171,26 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix statistics tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_statistics_tests
+    tests/core/matrix/matrix_statistics_tests.cpp
+)
+
+target_link_libraries(
+    matrix_statistics_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_statistics_tests
+    COMMAND matrix_statistics_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 
@@ -259,6 +285,12 @@ if(MSVC)
     )
 
     target_compile_options(
+        matrix_statistics_tests
+        PRIVATE
+            /W4
+    )
+
+    target_compile_options(
         linear_regression_tests
         PRIVATE
             /W4
@@ -315,6 +347,12 @@ else()
     )
 
     target_compile_options(
+        matrix_statistics_tests
+        PRIVATE
+            ${ML_WARNING_FLAGS}
+    )
+
+    target_compile_options(
         linear_regression_tests
         PRIVATE
             ${ML_WARNING_FLAGS}
@@ -345,3 +383,4 @@ install(
     DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+

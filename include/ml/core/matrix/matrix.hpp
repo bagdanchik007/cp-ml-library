@@ -54,6 +54,12 @@ public:
 
     // Matrix modification
     void fill(double value); 
+    void clear();
+    void resize(
+         size_t r, 
+         size_t c, 
+         double fill = 0.0
+    );
 
     // Statistical operations
     double sum() const;

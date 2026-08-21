@@ -603,6 +603,37 @@ inline void Matrix::fill(double value) {
 }
 
 // ============================================================
+// Clear the matrix 
+// ============================================================
+inline void Matrix::clear() {
+    rows = 0;
+    cols = 0;
+    data.clear();
+}
+inline void Matrix::resize(
+    size_t new_rows,
+    size_t new_cols,
+    double fill
+) {
+    std::vector<double> new_data(
+        new_rows * new_cols,
+        fill
+    );
+    const size_t rows_to_copy = std::min(rows, new_rows);
+    const size_t cols_to_copy = std::min(cols, new_cols);
+
+    for (size_t i = 0; i < rows_to_copy; ++i) {
+        for (size_t j = 0; j < cols_to_copy; ++j) {
+            new_data[i * new_cols + j] = (*this)(i, j);
+        }
+    }
+
+    rows = new_rows;
+    cols = new_cols;
+    data = std::move(new_data);
+}
+
+// ============================================================
 // In-place addition
 // ============================================================
 

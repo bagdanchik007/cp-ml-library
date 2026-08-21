@@ -151,6 +151,24 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix transformation tests
+# -------------------------------------------------
+
+add_executable(matrix_transformation_tests
+    tests/core/matrix/matrix_transformation_tests.cpp
+)
+
+target_link_libraries(matrix_transformation_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_transformation_tests
+    COMMAND matrix_transformation_tests
+)
+
+# -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
 

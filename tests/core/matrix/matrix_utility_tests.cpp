@@ -262,6 +262,26 @@ void test_matrix_trace() {
     std::cout << "OK\n";
 }
 
+void test_squared_norm() {
+    ml::Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    assert(matrix.squared_norm() == 30.0);
+}
+
+void test_norm() {
+    ml::Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    assert(
+        std::abs(matrix.norm() - std::sqrt(30.0)) < 1e-9
+    );
+}
+
 } // namespace
 
 int main() {
@@ -276,6 +296,8 @@ int main() {
     test_matrix_inverse();
     test_euclidean_distance();
     test_matrix_trace();
+    test_squared_norm();
+    test_norm();
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <iostream>
+#include <utility>
 #include <vector>
 
 namespace ml {
@@ -45,6 +46,14 @@ public:
     double trace() const;
     double determinant() const;
     Matrix inverse() const;
+
+    // Matrix information
+    bool empty() const;
+    size_t size() const;
+    std::pair<size_t, size_t> shape() const;
+
+    // Matrix modification
+    void fill(double value); 
 
     // Statistical operations
     double sum() const;

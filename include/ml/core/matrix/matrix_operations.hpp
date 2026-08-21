@@ -575,6 +575,34 @@ inline bool Matrix::operator!=(
 }
 
 // ============================================================
+// Matrix information
+// ============================================================
+
+inline bool Matrix::empty() const {
+    return rows == 0 || cols == 0;
+}
+
+inline size_t Matrix::size() const {
+    return data.size();
+}
+
+inline std::pair<size_t, size_t> Matrix::shape() const {
+    return {rows, cols};
+}
+
+// ============================================================
+// Matrix modification
+// ============================================================
+
+inline void Matrix::fill(double value) {
+    std::fill(
+        data.begin(),
+        data.end(),
+        value
+    );
+}
+
+// ============================================================
 // In-place addition
 // ============================================================
 

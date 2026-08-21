@@ -197,24 +197,10 @@ inline void Matrix::set_column(
 }
 
 // ============================================================
-// Transpose
-// ============================================================
-
-inline Matrix Matrix::transpose() const {
-    Matrix result(cols, rows);
-
-    for (size_t i = 0; i < rows; ++i) {
-        for (size_t j = 0; j < cols; ++j) {
-            result(j, i) = (*this)(i, j);
-        }
-    }
-
-    return result;
-}
-// ============================================================
 // Statistical operations
 // ============================================================
-// Sum, mean, min, max
+
+// Sum
 inline double Matrix::sum() const {
     return std::accumulate(
         data.begin(),
@@ -222,7 +208,8 @@ inline double Matrix::sum() const {
         0.0
     );
 }
-// Mean, min, max
+
+// Mean
 inline double Matrix::mean() const {
     if (data.empty()) {
         throw std::invalid_argument(
@@ -232,7 +219,8 @@ inline double Matrix::mean() const {
 
     return sum() / static_cast<double>(data.size());
 }
-// Min, max
+
+// Min
 inline double Matrix::min() const {
     if (data.empty()) {
         throw std::invalid_argument(
@@ -245,6 +233,7 @@ inline double Matrix::min() const {
         data.end()
     );
 }
+
 // Max
 inline double Matrix::max() const {
     if (data.empty()) {
@@ -603,13 +592,19 @@ inline void Matrix::fill(double value) {
 }
 
 // ============================================================
-// Clear the matrix 
+// Clear the matrix
 // ============================================================
+
 inline void Matrix::clear() {
     rows = 0;
     cols = 0;
     data.clear();
 }
+
+// ============================================================
+// Resize
+// ============================================================
+
 inline void Matrix::resize(
     size_t new_rows,
     size_t new_cols,
@@ -619,12 +614,17 @@ inline void Matrix::resize(
         new_rows * new_cols,
         fill
     );
-    const size_t rows_to_copy = std::min(rows, new_rows);
-    const size_t cols_to_copy = std::min(cols, new_cols);
+
+    const size_t rows_to_copy =
+        std::min(rows, new_rows);
+
+    const size_t cols_to_copy =
+        std::min(cols, new_cols);
 
     for (size_t i = 0; i < rows_to_copy; ++i) {
         for (size_t j = 0; j < cols_to_copy; ++j) {
-            new_data[i * new_cols + j] = (*this)(i, j);
+            new_data[i * new_cols + j] =
+                (*this)(i, j);
         }
     }
 
@@ -716,6 +716,41 @@ inline Matrix Matrix::operator*(
 
     return result;
 }
+
+// ============================================================
+// Matrix transformations
+// ============================================================
+
+inline Matrix Matrix::transpose() const {
+    Matrix result(cols, rows);
+
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            result(j, i) = (*this)(i, j);
+        }
+    }
+
+    return result;
+}
+
+inline void Matrix::reshape(
+    size_t new_rows,
+    size_t new_cols
+) {
+    if (new_rows * new_cols != rows * cols) {
+        throw std::invalid_argument(
+            "Matrix::reshape: new dimensions must contain the same number of elements"
+        );
+    }
+
+    rows = new_rows;
+    cols = new_cols;
+}
+
+inline std::vector<double> Matrix::flatten() const {
+    return data;
+}
+
 // ============================================================
 // Hadamard product (element-wise multiplication)
 // ============================================================

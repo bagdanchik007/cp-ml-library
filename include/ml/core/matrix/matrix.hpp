@@ -41,6 +41,11 @@ public:
     
     // Matrix transformations
     Matrix transpose() const;
+    void reshape(
+        size_t new_rows,
+        size_t new_cols
+    );
+    std::vector<double> flatten() const;
 
     // Matrix properties
     double trace() const;

@@ -282,6 +282,68 @@ void test_norm() {
     );
 }
 
+void test_matrix_information() {
+    std::cout << "[TEST] Matrix information ... ";
+
+    {
+        Matrix matrix;
+
+        assert(matrix.empty());
+        assert(matrix.size() == 0);
+
+        const auto [rows, cols] = matrix.shape();
+
+        assert(rows == 0);
+        assert(cols == 0);
+    }
+
+    {
+        Matrix matrix(2, 3, 1.0);
+
+        assert(!matrix.empty());
+        assert(matrix.size() == 6);
+
+        const auto [rows, cols] = matrix.shape();
+
+        assert(rows == 2);
+        assert(cols == 3);
+    }
+
+    std::cout << "OK\n";
+}
+
+void test_matrix_fill() {
+    std::cout << "[TEST] Matrix fill ... ";
+
+    {
+        Matrix matrix(2, 3);
+
+        matrix.fill(5.0);
+
+        for (size_t i = 0; i < matrix.rows; ++i) {
+            for (size_t j = 0; j < matrix.cols; ++j) {
+                assert(matrix(i, j) == 5.0);
+            }
+        }
+    }
+
+    {
+        Matrix matrix = {
+            {1.0, 2.0},
+            {3.0, 4.0}
+        };
+
+        matrix.fill(-2.5);
+
+        assert(matrix(0, 0) == -2.5);
+        assert(matrix(0, 1) == -2.5);
+        assert(matrix(1, 0) == -2.5);
+        assert(matrix(1, 1) == -2.5);
+    }
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
@@ -298,6 +360,8 @@ int main() {
     test_matrix_trace();
     test_squared_norm();
     test_norm();
+    test_matrix_information();
+    test_matrix_fill();
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

@@ -271,6 +271,26 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix scalar tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_scalar_tests
+    tests/core/matrix/matrix_scalar_tests.cpp
+)
+
+target_link_libraries(
+    matrix_scalar_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_scalar_tests
+    COMMAND matrix_scalar_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 

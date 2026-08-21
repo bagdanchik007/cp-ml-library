@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(CppMLLibrary VERSION 1.0.0 LANGUAGES CXX)
+project(
+    CppMLLibrary
+    VERSION 1.0.0
+    LANGUAGES CXX
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,9 +17,25 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(ml_library
     src/algorithms/linear_regression.cpp
     src/algorithms/kmeans.cpp
+
+    # Matrix core
+    include/ml/core/matrix/matrix.hpp
+    include/ml/core/matrix/matrix_utility.hpp
+
+    # Matrix operations
+    include/ml/core/matrix/operations/matrix_construction.hpp
+    include/ml/core/matrix/operations/matrix_access.hpp
+    include/ml/core/matrix/operations/matrix_statistics.hpp
+    include/ml/core/matrix/operations/matrix_linear_algebra.hpp
+    include/ml/core/matrix/operations/matrix_arithmetic.hpp
+    include/ml/core/matrix/operations/matrix_transformations.hpp
+    include/ml/core/matrix/operations/matrix_scalar.hpp
+    include/ml/core/matrix/operations/matrix_factory.hpp
+    include/ml/core/matrix/operations/matrix_io.hpp
 )
 
-target_include_directories(ml_library
+target_include_directories(
+    ml_library
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
@@ -25,13 +45,15 @@ target_include_directories(ml_library
 # Demo executable
 # -------------------------------------------------
 
-add_executable(ml_demo
+add_executable(
+    ml_demo
     examples/demo.cpp
     examples/linear_regression_demo.cpp
     examples/kmeans_demo.cpp
 )
 
-target_link_libraries(ml_demo
+target_link_libraries(
+    ml_demo
     PRIVATE
         ml_library
 )
@@ -46,11 +68,13 @@ enable_testing()
 # Matrix tests
 # -------------------------------------------------
 
-add_executable(matrix_tests
+add_executable(
+    matrix_tests
     tests/core/matrix/matrix_tests.cpp
 )
 
-target_link_libraries(matrix_tests
+target_link_libraries(
+    matrix_tests
     PRIVATE
         ml_library
 )
@@ -64,11 +88,13 @@ add_test(
 # Matrix arithmetic tests
 # -------------------------------------------------
 
-add_executable(matrix_arithmetic_tests
+add_executable(
+    matrix_arithmetic_tests
     tests/core/matrix/matrix_arithmetic_tests.cpp
 )
 
-target_link_libraries(matrix_arithmetic_tests
+target_link_libraries(
+    matrix_arithmetic_tests
     PRIVATE
         ml_library
 )
@@ -82,11 +108,13 @@ add_test(
 # Matrix utility tests
 # -------------------------------------------------
 
-add_executable(matrix_utility_tests
+add_executable(
+    matrix_utility_tests
     tests/core/matrix/matrix_utility_tests.cpp
 )
 
-target_link_libraries(matrix_utility_tests
+target_link_libraries(
+    matrix_utility_tests
     PRIVATE
         ml_library
 )
@@ -100,11 +128,13 @@ add_test(
 # Matrix validation tests
 # -------------------------------------------------
 
-add_executable(matrix_validation_tests
+add_executable(
+    matrix_validation_tests
     tests/core/matrix/matrix_validation_tests.cpp
 )
 
-target_link_libraries(matrix_validation_tests
+target_link_libraries(
+    matrix_validation_tests
     PRIVATE
         ml_library
 )
@@ -115,14 +145,36 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix transformation tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_transformation_tests
+    tests/core/matrix/matrix_transformation_tests.cpp
+)
+
+target_link_libraries(
+    matrix_transformation_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_transformation_tests
+    COMMAND matrix_transformation_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 
-add_executable(linear_regression_tests
+add_executable(
+    linear_regression_tests
     tests/algorithms/linear_regression_tests.cpp
 )
 
-target_link_libraries(linear_regression_tests
+target_link_libraries(
+    linear_regression_tests
     PRIVATE
         ml_library
 )
@@ -136,11 +188,13 @@ add_test(
 # K-Means tests
 # -------------------------------------------------
 
-add_executable(kmeans_tests
+add_executable(
+    kmeans_tests
     tests/algorithms/kmeans_tests.cpp
 )
 
-target_link_libraries(kmeans_tests
+target_link_libraries(
+    kmeans_tests
     PRIVATE
         ml_library
 )
@@ -151,26 +205,14 @@ add_test(
 )
 
 # -------------------------------------------------
-# Matrix transformation tests
-# -------------------------------------------------
-
-add_executable(matrix_transformation_tests
-    tests/core/matrix/matrix_transformation_tests.cpp
-)
-
-target_link_libraries(matrix_transformation_tests
-    PRIVATE
-        ml_library
-)
-
-add_test(
-    NAME matrix_transformation_tests
-    COMMAND matrix_transformation_tests
-)
-
-# -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
+
+set(ML_WARNING_FLAGS
+    -Wall
+    -Wextra
+    -Wpedantic
+)
 
 if(MSVC)
 
@@ -211,6 +253,12 @@ if(MSVC)
     )
 
     target_compile_options(
+        matrix_transformation_tests
+        PRIVATE
+            /W4
+    )
+
+    target_compile_options(
         linear_regression_tests
         PRIVATE
             /W4
@@ -227,65 +275,55 @@ else()
     target_compile_options(
         ml_library
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         ml_demo
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         matrix_tests
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         matrix_arithmetic_tests
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         matrix_utility_tests
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         matrix_validation_tests
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
+    )
+
+    target_compile_options(
+        matrix_transformation_tests
+        PRIVATE
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         linear_regression_tests
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
     target_compile_options(
         kmeans_tests
         PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
+            ${ML_WARNING_FLAGS}
     )
 
 endif()

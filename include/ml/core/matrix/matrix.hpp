@@ -11,7 +11,7 @@ namespace ml {
 /**
  * @brief Lightweight dense matrix class.
  *
- * Declaration only. All implementations live in matrix_operations.hpp,
+ * Declaration only. Implementations are organized in the operations/ directory,
  * which is included at the bottom of this file.
  */
 class Matrix {
@@ -118,4 +118,14 @@ public:
 } // namespace ml
 
 // Implementation (header-only)
-#include "matrix_operations.hpp"
+#include "operations/matrix_construction.hpp"
+#include "operations/matrix_access.hpp"
+#include "operations/matrix_statistics.hpp"
+#include "operations/matrix_linear_algebra.hpp"
+#include "operations/matrix_arithmetic.hpp"
+#include "operations/matrix_transformations.hpp"
+#include "operations/matrix_scalar.hpp"
+#include "operations/matrix_factory.hpp"
+#include "operations/matrix_io.hpp"
+#include "operations/matrix_utility.hpp"
+#include "operations/matrix_comparison.hpp"

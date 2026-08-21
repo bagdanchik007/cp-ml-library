@@ -251,6 +251,26 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix comparison tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_comparison_tests
+    tests/core/matrix/matrix_comparison_tests.cpp
+)
+
+target_link_libraries(
+    matrix_comparison_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_comparison_tests
+    COMMAND matrix_comparison_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 

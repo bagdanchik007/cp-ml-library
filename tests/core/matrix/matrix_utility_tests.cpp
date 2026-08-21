@@ -343,7 +343,89 @@ void test_matrix_fill() {
 
     std::cout << "OK\n";
 }
+void test_clear() {
+    std::cout << "[TEST] Matrix clear ... ";
 
+    Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    matrix.clear();
+
+    assert(matrix.rows == 0);
+    assert(matrix.cols == 0);
+    assert(matrix.data.empty());
+    assert(matrix.empty());
+    assert(matrix.size() == 0);
+
+    std::cout << "OK\n";
+}
+
+void test_resize_grow() {
+    std::cout << "[TEST] Matrix resize grow ... ";
+
+    Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    matrix.resize(3, 4, 0.0);
+
+    assert(matrix.rows == 3);
+    assert(matrix.cols == 4);
+    assert(matrix.size() == 12);
+
+    assert(matrix(0, 0) == 1.0);
+    assert(matrix(0, 1) == 2.0);
+    assert(matrix(1, 0) == 3.0);
+    assert(matrix(1, 1) == 4.0);
+
+    assert(matrix(2, 0) == 0.0);
+    assert(matrix(2, 3) == 0.0);
+
+    std::cout << "OK\n";
+}
+
+void test_resize_shrink() {
+    std::cout << "[TEST] Matrix resize shrink ... ";
+
+    Matrix matrix = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0},
+        {7.0, 8.0, 9.0}
+    };
+
+    matrix.resize(2, 2);
+
+    assert(matrix.rows == 2);
+    assert(matrix.cols == 2);
+
+    assert(matrix(0, 0) == 1.0);
+    assert(matrix(0, 1) == 2.0);
+    assert(matrix(1, 0) == 4.0);
+    assert(matrix(1, 1) == 5.0);
+
+    std::cout << "OK\n";
+}
+
+void test_resize_with_fill() {
+    std::cout << "[TEST] Matrix resize with fill ... ";
+
+    Matrix matrix(1, 1, 5.0);
+
+    matrix.resize(2, 3, -1.0);
+
+    assert(matrix(0, 0) == 5.0);
+
+    assert(matrix(0, 1) == -1.0);
+    assert(matrix(0, 2) == -1.0);
+    assert(matrix(1, 0) == -1.0);
+    assert(matrix(1, 1) == -1.0);
+    assert(matrix(1, 2) == -1.0);
+
+    std::cout << "OK\n";
+}
 } // namespace
 
 int main() {
@@ -362,6 +444,11 @@ int main() {
     test_norm();
     test_matrix_information();
     test_matrix_fill();
+    test_clear();
+    test_resize_grow();
+    test_resize_shrink();
+    test_resize_with_fill();
+
     std::cout << "\nAll matrix utility tests passed!\n";
 
     return 0;

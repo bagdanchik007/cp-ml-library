@@ -84,7 +84,13 @@ public:
     Matrix& operator-=(const Matrix& other);
     Matrix operator*(const Matrix& other) const;
     Matrix hadamard(const Matrix& other) const;
-    
+    // Submatrix extraction
+    Matrix submatrix(
+        size_t row_begin,
+        size_t row_end,
+        size_t column_begin,
+        size_t column_end
+    ) const;
     // Comparison
     bool operator==(const Matrix& other) const;
     bool operator!=(const Matrix& other) const;
@@ -129,3 +135,4 @@ public:
 #include "operations/matrix_io.hpp"
 #include "operations/matrix_utility.hpp"
 #include "operations/matrix_comparison.hpp"
+#include "operations/matrix_slicing.hpp"

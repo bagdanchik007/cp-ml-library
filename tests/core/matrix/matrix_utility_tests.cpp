@@ -426,12 +426,85 @@ void test_resize_with_fill() {
 
     std::cout << "OK\n";
 }
+
+void test_factory_zero_matrix() {
+    std::cout << "[TEST] Factory zeros ... ";
+
+    const Matrix matrix = Matrix::zeros(2, 3);
+
+    assert(matrix.rows == 2);
+    assert(matrix.cols == 3);
+
+    for (double value : matrix.data) {
+        assert(value == 0.0);
+    }
+
+    std::cout << "OK\n";
+}
+
+void test_factory_one_matrix() {
+    std::cout << "[TEST] Factory ones ... ";
+
+    const Matrix matrix = Matrix::ones(2, 3);
+
+    assert(matrix.rows == 2);
+    assert(matrix.cols == 3);
+
+    for (double value : matrix.data) {
+        assert(value == 1.0);
+    }
+
+    std::cout << "OK\n";
+}
+
+void test_factory_identity_matrix() {
+    std::cout << "[TEST] Factory identity ... ";
+
+    const Matrix matrix = Matrix::identity(3);
+
+    assert(matrix.rows == 3);
+    assert(matrix.cols == 3);
+
+    assert(matrix(0, 0) == 1.0);
+    assert(matrix(1, 1) == 1.0);
+    assert(matrix(2, 2) == 1.0);
+
+    assert(matrix(0, 1) == 0.0);
+    assert(matrix(0, 2) == 0.0);
+    assert(matrix(1, 0) == 0.0);
+    assert(matrix(1, 2) == 0.0);
+    assert(matrix(2, 0) == 0.0);
+    assert(matrix(2, 1) == 0.0);
+
+    std::cout << "OK\n";
+}
+
+void test_factory_random_matrix() {
+    std::cout << "[TEST] Factory random ... ";
+
+    const Matrix matrix =
+        Matrix::random(3, 3, -1.0, 1.0, 42);
+
+    assert(matrix.rows == 3);
+    assert(matrix.cols == 3);
+
+    for (double value : matrix.data) {
+        assert(value >= -1.0);
+        assert(value <= 1.0);
+    }
+
+    std::cout << "OK\n";
+}
+
 } // namespace
 
 int main() {
     std::cout << "Running matrix utility tests...\n\n";
-
     test_factory_methods();
+    test_factory_zero_matrix();
+    test_factory_one_matrix();
+    test_factory_identity_matrix();
+    test_factory_random_matrix();
     test_row_operations();
     test_random_matrix();
     test_identity_matrix();

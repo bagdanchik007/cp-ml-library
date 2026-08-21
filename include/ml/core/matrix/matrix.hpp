@@ -51,7 +51,9 @@ public:
     double mean() const;
     double min() const;
     double max() const;
-
+    // Matrix norms
+    double squared_norm() const;
+    double norm() const;
     // Matrix-vector operations
     std::vector<double> operator*(const std::vector<double>& v) const;
 

@@ -260,6 +260,24 @@ inline double Matrix::max() const {
 }
 
 // ============================================================
+// Matrix norms
+// ============================================================
+
+inline double Matrix::squared_norm() const {
+    double result = 0.0;
+
+    for (const double value : data) {
+        result += value * value;
+    }
+
+    return result;
+}
+
+inline double Matrix::norm() const {
+    return std::sqrt(squared_norm());
+}
+
+// ============================================================
 // Determinant
 // ============================================================
 

@@ -175,6 +175,71 @@ void test_matrix_flatten_empty_matrix() {
     std::cout << "OK\n";
 }
 
+void test_matrix_submatrix() {
+    std::cout << "[TEST] Matrix submatrix extraction ... ";
+
+    const Matrix matrix = {
+        {1.0, 2.0, 3.0, 4.0},
+        {5.0, 6.0, 7.0, 8.0},
+        {9.0, 10.0, 11.0, 12.0}
+    };
+
+    const Matrix result = matrix.submatrix(0, 2, 1, 3);
+
+    assert(result.rows == 2);
+    assert(result.cols == 2);
+
+    assert(result(0, 0) == 2.0);
+    assert(result(0, 1) == 3.0);
+    assert(result(1, 0) == 6.0);
+    assert(result(1, 1) == 7.0);
+
+    std::cout << "OK\n";
+}
+
+void test_matrix_submatrix_rejects_invalid_range() {
+    std::cout << "[TEST] Matrix submatrix rejects invalid range ... ";
+
+    const Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    bool exception_thrown = false;
+
+    try {
+        [[maybe_unused]] const Matrix result =
+            matrix.submatrix(1, 0, 0, 2);
+    } catch (const std::invalid_argument&) {
+        exception_thrown = true;
+    }
+
+    assert(exception_thrown);
+
+    std::cout << "OK\n";
+}
+
+void test_matrix_submatrix_rejects_out_of_bounds() {
+    std::cout << "[TEST] Matrix submatrix rejects out of bounds ... ";
+
+    const Matrix matrix = {
+        {1.0, 2.0},
+        {3.0, 4.0}
+    };
+
+    bool exception_thrown = false;
+
+    try {
+        [[maybe_unused]] const Matrix result =
+            matrix.submatrix(0, 3, 0, 2);
+    } catch (const std::out_of_range&) {
+        exception_thrown = true;
+    }
+
+    assert(exception_thrown);
+
+    std::cout << "OK\n";
+}
 } // namespace
 
 int main() {
@@ -190,7 +255,9 @@ int main() {
     test_matrix_reshape_to_single_row();
     test_matrix_reshape_to_single_column();
     test_matrix_flatten_empty_matrix();
-
+    test_matrix_submatrix();
+    test_matrix_submatrix_rejects_invalid_range();
+    test_matrix_submatrix_rejects_out_of_bounds();   
     std::cout << "\nAll matrix transformation tests passed.\n";
 
     return 0;

@@ -211,6 +211,26 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix column tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_column_tests
+    tests/core/matrix/matrix_column_tests.cpp
+)
+
+target_link_libraries(
+    matrix_column_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_column_tests
+    COMMAND matrix_column_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 

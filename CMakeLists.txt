@@ -191,6 +191,26 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix norm tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_norm_tests
+    tests/core/matrix/matrix_norm_tests.cpp
+)
+
+target_link_libraries(
+    matrix_norm_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_norm_tests
+    COMMAND matrix_norm_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 

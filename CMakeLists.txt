@@ -291,6 +291,26 @@ add_test(
 )
 
 # -------------------------------------------------
+# Matrix linear algebra tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_linear_algebra_tests
+    tests/core/matrix/matrix_linear_algebra_tests.cpp
+)
+
+target_link_libraries(
+    matrix_linear_algebra_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_linear_algebra_tests
+    COMMAND matrix_linear_algebra_tests
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 

@@ -35,7 +35,7 @@ add_library(ml_library
     include/ml/core/matrix/operations/matrix_utility.hpp
     include/ml/core/matrix/operations/matrix_comparison.hpp
     include/ml/core/matrix/operations/matrix_slicing.hpp
-
+    include/ml/core/matrix/operations/matrix_decomposition.hpp
     # Matrix internals
     include/ml/core/matrix/detail/matrix_validation.hpp
 )

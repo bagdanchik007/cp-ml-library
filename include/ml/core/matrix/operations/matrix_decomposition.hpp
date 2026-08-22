@@ -29,7 +29,6 @@ inline std::pair<Matrix, Matrix> Matrix::lu_decomposition() const {
     Matrix upper(rows, cols);
 
     for (size_t i = 0; i < rows; ++i) {
-
         // Compute upper triangular matrix.
         for (size_t k = i; k < cols; ++k) {
             double sum = 0.0;

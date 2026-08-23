@@ -9,6 +9,7 @@
 
 #include "algorithms/linear_regression.hpp"
 #include "algorithms/kmeans.hpp"
+#include "preprocessing/standard_scaler.hpp"
 
 namespace ml {
 constexpr int VERSION_MAJOR = 1;

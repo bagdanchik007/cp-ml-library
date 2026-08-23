@@ -236,6 +236,26 @@ else()
 endif()
 
 # -------------------------------------------------
+# Matrix solve tests
+# -------------------------------------------------
+
+add_executable(
+    matrix_solve_tests
+    tests/core/matrix/matrix_solve_tests.cpp
+)
+
+target_link_libraries(
+    matrix_solve_tests
+    PRIVATE
+        ml_library
+)
+
+add_test(
+    NAME matrix_solve_tests
+    COMMAND matrix_solve_tests
+)
+
+# -------------------------------------------------
 # Apply warnings to all project targets
 # -------------------------------------------------
 

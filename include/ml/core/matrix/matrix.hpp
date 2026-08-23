@@ -37,22 +37,32 @@ public:
     );
 
     Matrix(
-        std::initializer_list<std::initializer_list<double>> init
+        std::initializer_list<
+            std::initializer_list<double>
+        > init
     );
 
     // ============================================================
     // Element access
     // ============================================================
 
-    double& operator()(size_t i, size_t j);
+    double& operator()(
+        size_t i,
+        size_t j
+    );
 
-    const double& operator()(size_t i, size_t j) const;
+    const double& operator()(
+        size_t i,
+        size_t j
+    ) const;
 
     // ============================================================
     // Row and column operations
     // ============================================================
 
-    std::vector<double> row(size_t i) const;
+    std::vector<double> row(
+        size_t i
+    ) const;
 
     void set_row(
         size_t i,
@@ -64,7 +74,9 @@ public:
         size_t second
     );
 
-    std::vector<double> column(size_t j) const;
+    std::vector<double> column(
+        size_t j
+    ) const;
 
     void set_column(
         size_t j,
@@ -99,7 +111,19 @@ public:
 
     Matrix inverse() const;
 
+    // ============================================================
+    // Matrix decomposition
+    // ============================================================
+
     std::pair<Matrix, Matrix> lu_decomposition() const;
+
+    // ============================================================
+    // Linear systems
+    // ============================================================
+
+    std::vector<double> solve(
+        const std::vector<double>& b
+    ) const;
 
     // ============================================================
     // Matrix information
@@ -115,7 +139,9 @@ public:
     // Matrix modification
     // ============================================================
 
-    void fill(double value);
+    void fill(
+        double value
+    );
 
     void clear();
 
@@ -157,17 +183,29 @@ public:
     // Matrix-matrix operations
     // ============================================================
 
-    Matrix operator+(const Matrix& other) const;
+    Matrix operator+(
+        const Matrix& other
+    ) const;
 
-    Matrix operator-(const Matrix& other) const;
+    Matrix operator-(
+        const Matrix& other
+    ) const;
 
-    Matrix& operator+=(const Matrix& other);
+    Matrix& operator+=(
+        const Matrix& other
+    );
 
-    Matrix& operator-=(const Matrix& other);
+    Matrix& operator-=(
+        const Matrix& other
+    );
 
-    Matrix operator*(const Matrix& other) const;
+    Matrix operator*(
+        const Matrix& other
+    ) const;
 
-    Matrix hadamard(const Matrix& other) const;
+    Matrix hadamard(
+        const Matrix& other
+    ) const;
 
     // ============================================================
     // Submatrix extraction
@@ -184,21 +222,33 @@ public:
     // Comparison
     // ============================================================
 
-    bool operator==(const Matrix& other) const;
+    bool operator==(
+        const Matrix& other
+    ) const;
 
-    bool operator!=(const Matrix& other) const;
+    bool operator!=(
+        const Matrix& other
+    ) const;
 
     // ============================================================
     // Scalar operations
     // ============================================================
 
-    Matrix operator*(double scalar) const;
+    Matrix operator*(
+        double scalar
+    ) const;
 
-    Matrix operator/(double scalar) const;
+    Matrix operator/(
+        double scalar
+    ) const;
 
-    Matrix& operator*=(double scalar);
+    Matrix& operator*=(
+        double scalar
+    );
 
-    Matrix& operator/=(double scalar);
+    Matrix& operator/=(
+        double scalar
+    );
 
     // ============================================================
     // Output
@@ -241,6 +291,7 @@ public:
 // ============================================================
 // Matrix implementations
 // ============================================================
+
 #include "operations/matrix_construction.hpp"
 #include "operations/matrix_access.hpp"
 #include "operations/matrix_statistics.hpp"
@@ -254,3 +305,4 @@ public:
 #include "operations/matrix_utility.hpp"
 #include "operations/matrix_factory.hpp"
 #include "operations/matrix_io.hpp"
+

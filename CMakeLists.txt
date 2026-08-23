@@ -196,6 +196,15 @@ add_ml_test(
 )
 
 # -------------------------------------------------
+# Matrix solve tests
+# -------------------------------------------------
+
+add_ml_test(
+    matrix_solve_tests
+    tests/core/matrix/matrix_solve_tests.cpp
+)
+
+# -------------------------------------------------
 # Linear Regression tests
 # -------------------------------------------------
 
@@ -211,6 +220,15 @@ add_ml_test(
 add_ml_test(
     kmeans_tests
     tests/algorithms/kmeans_tests.cpp
+)
+
+# -------------------------------------------------
+# StandardScaler tests
+# -------------------------------------------------
+
+add_ml_test(
+    standard_scaler_tests
+    tests/preprocessing/standard_scaler_tests.cpp
 )
 
 # -------------------------------------------------
@@ -236,26 +254,6 @@ else()
 endif()
 
 # -------------------------------------------------
-# Matrix solve tests
-# -------------------------------------------------
-
-add_executable(
-    matrix_solve_tests
-    tests/core/matrix/matrix_solve_tests.cpp
-)
-
-target_link_libraries(
-    matrix_solve_tests
-    PRIVATE
-        ml_library
-)
-
-add_test(
-    NAME matrix_solve_tests
-    COMMAND matrix_solve_tests
-)
-
-# -------------------------------------------------
 # Apply warnings to all project targets
 # -------------------------------------------------
 
@@ -277,9 +275,11 @@ set(
     matrix_scalar_tests
     matrix_linear_algebra_tests
     matrix_decomposition_tests
+    matrix_solve_tests
 
     linear_regression_tests
     kmeans_tests
+    standard_scaler_tests
 )
 
 foreach(TARGET_NAME IN LISTS ML_TARGETS)

@@ -8,6 +8,8 @@
 
 namespace ml {
 
+struct LUDecomposition;
+
 /**
  * @brief Lightweight dense matrix class.
  *
@@ -115,7 +117,7 @@ public:
     // Matrix decomposition
     // ============================================================
 
-    std::pair<Matrix, Matrix> lu_decomposition() const;
+    LUDecomposition lu_decomposition() const;
 
     // ============================================================
     // Linear systems
@@ -286,6 +288,24 @@ public:
     );
 };
 
+/**
+ * @brief Result of an LU decomposition with partial pivoting.
+ *
+ * The decomposition satisfies:
+ *
+ *     P * A = L * U
+ *
+ * where:
+ * - P is the permutation matrix
+ * - L is the lower triangular matrix
+ * - U is the upper triangular matrix
+ */
+struct LUDecomposition {
+    Matrix lower;
+    Matrix upper;
+    Matrix permutation;
+};
+
 } // namespace ml
 
 // ============================================================
@@ -305,4 +325,3 @@ public:
 #include "operations/matrix_utility.hpp"
 #include "operations/matrix_factory.hpp"
 #include "operations/matrix_io.hpp"
-

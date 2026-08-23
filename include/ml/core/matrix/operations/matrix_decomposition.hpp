@@ -4,16 +4,15 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <utility>
 #include <vector>
 
 namespace ml {
 
 // ============================================================
-// LU decomposition
+// LU decomposition with partial pivoting
 // ============================================================
 
-inline std::pair<Matrix, Matrix> Matrix::lu_decomposition() const {
+inline LUDecomposition Matrix::lu_decomposition() const {
     if (rows != cols) {
         throw std::invalid_argument(
             "LU decomposition requires a square matrix"
@@ -27,41 +26,76 @@ inline std::pair<Matrix, Matrix> Matrix::lu_decomposition() const {
     }
 
     Matrix lower = Matrix::identity(rows);
-    Matrix upper(rows, cols, 0.0);
+    Matrix upper = *this;
+    Matrix permutation = Matrix::identity(rows);
+
+    constexpr double epsilon = 1e-12;
 
     for (size_t i = 0; i < rows; ++i) {
 
-        // Compute the upper triangular matrix.
-        for (size_t k = i; k < cols; ++k) {
-            double sum = 0.0;
+        // ========================================================
+        // Find pivot
+        // ========================================================
 
-            for (size_t j = 0; j < i; ++j) {
-                sum += lower(i, j) * upper(j, k);
+        size_t pivot_row = i;
+        double pivot_value = std::abs(upper(i, i));
+
+        for (size_t k = i + 1; k < rows; ++k) {
+            const double value =
+                std::abs(upper(k, i));
+
+            if (value > pivot_value) {
+                pivot_value = value;
+                pivot_row = k;
             }
-
-            upper(i, k) = (*this)(i, k) - sum;
         }
 
-        if (std::abs(upper(i, i)) < 1e-12) {
+        if (pivot_value < epsilon) {
             throw std::invalid_argument(
-                "Matrix cannot be decomposed without pivoting"
+                "Matrix is singular and cannot be decomposed"
             );
         }
 
-        // Compute the lower triangular matrix.
-        for (size_t k = i + 1; k < rows; ++k) {
-            double sum = 0.0;
+        // ========================================================
+        // Swap rows if necessary
+        // ========================================================
 
+        if (pivot_row != i) {
+            upper.swap_rows(i, pivot_row);
+            permutation.swap_rows(i, pivot_row);
+
+            // Previously calculated values in L must also
+            // be swapped.
             for (size_t j = 0; j < i; ++j) {
-                sum += lower(k, j) * upper(j, i);
+                std::swap(
+                    lower(i, j),
+                    lower(pivot_row, j)
+                );
+            }
+        }
+
+        // ========================================================
+        // Compute lower matrix
+        // ========================================================
+
+        for (size_t k = i + 1; k < rows; ++k) {
+            lower(k, i) =
+                upper(k, i) / upper(i, i);
+
+            for (size_t j = i; j < cols; ++j) {
+                upper(k, j) -=
+                    lower(k, i) * upper(i, j);
             }
 
-            lower(k, i) =
-                ((*this)(k, i) - sum) / upper(i, i);
+            upper(k, i) = 0.0;
         }
     }
 
-    return {lower, upper};
+    return {
+        lower,
+        upper,
+        permutation
+    };
 }
 
 // ============================================================
@@ -89,44 +123,66 @@ inline std::vector<double> Matrix::solve(
         );
     }
 
-    const auto [lower, upper] = lu_decomposition();
+    const LUDecomposition decomposition =
+        lu_decomposition();
+
+    const Matrix& lower =
+        decomposition.lower;
+
+    const Matrix& upper =
+        decomposition.upper;
+
+    const Matrix& permutation =
+        decomposition.permutation;
+
+    // ========================================================
+    // Apply permutation: Pb
+    // ========================================================
+
+    std::vector<double> permuted_b(rows, 0.0);
+
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < rows; ++j) {
+            permuted_b[i] +=
+                permutation(i, j) * b[j];
+        }
+    }
+
+    // ========================================================
+    // Forward substitution: Ly = Pb
+    // ========================================================
 
     std::vector<double> y(rows, 0.0);
-    std::vector<double> x(rows, 0.0);
-
-    // ========================================================
-    // Forward substitution: Ly = b
-    // ========================================================
 
     for (size_t i = 0; i < rows; ++i) {
         double sum = 0.0;
 
         for (size_t j = 0; j < i; ++j) {
-            sum += lower(i, j) * y[j];
-        }
-
-        if (std::abs(lower(i, i)) < 1e-12) {
-            throw std::invalid_argument(
-                "Matrix decomposition produced a singular lower matrix"
-            );
+            sum +=
+                lower(i, j) * y[j];
         }
 
         y[i] =
-            (b[i] - sum) / lower(i, i);
+            permuted_b[i] - sum;
     }
 
     // ========================================================
     // Backward substitution: Ux = y
     // ========================================================
 
+    std::vector<double> x(rows, 0.0);
+
+    constexpr double epsilon = 1e-12;
+
     for (size_t i = rows; i-- > 0;) {
         double sum = 0.0;
 
         for (size_t j = i + 1; j < cols; ++j) {
-            sum += upper(i, j) * x[j];
+            sum +=
+                upper(i, j) * x[j];
         }
 
-        if (std::abs(upper(i, i)) < 1e-12) {
+        if (std::abs(upper(i, i)) < epsilon) {
             throw std::invalid_argument(
                 "Matrix is singular and cannot be solved"
             );

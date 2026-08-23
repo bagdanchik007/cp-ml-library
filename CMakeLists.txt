@@ -228,7 +228,17 @@ add_ml_test(
 
 add_ml_test(
     standard_scaler_tests
+umbrella_header_tests
+add_ml_test(
+    umbrella_header_tests
+    tests/api/umbrella_header_tests.cpp
+)
     tests/preprocessing/standard_scaler_tests.cpp
+umbrella_header_tests
+add_ml_test(
+    umbrella_header_tests
+    tests/api/umbrella_header_tests.cpp
+)
 )
 
 # -------------------------------------------------
@@ -280,6 +290,11 @@ set(
     linear_regression_tests
     kmeans_tests
     standard_scaler_tests
+umbrella_header_tests
+add_ml_test(
+    umbrella_header_tests
+    tests/api/umbrella_header_tests.cpp
+)
 )
 
 foreach(TARGET_NAME IN LISTS ML_TARGETS)

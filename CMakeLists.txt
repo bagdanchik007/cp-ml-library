@@ -257,6 +257,14 @@ add_ml_test(
     tests/preprocessing/min_max_scaler_tests.cpp
 )
 
+#--------------------------------------------------
+#RobustScaler tests
+#--------------------------------------------------
+add_ml_test(
+    robust_scaler_tests
+    tests/preprocessing/robust_scaler_tests.cpp
+)
+
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------

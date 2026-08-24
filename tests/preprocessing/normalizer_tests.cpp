@@ -35,7 +35,7 @@ void test_row_normalization() {
 void test_unit_norm() {
     ml::Matrix data{
         {3.0, 4.0},
-        {1.0, 2.0, 2.0}
+        {5.0, 12.0}
     };
 
     ml::Normalizer normalizer;
@@ -48,13 +48,18 @@ void test_unit_norm() {
 
         for (size_t column = 0; column < result.cols; ++column) {
             squared_norm +=
-                result(row, column) * result(row, column);
+                result(row, column) *
+                result(row, column);
         }
 
-        assert(almost_equal(squared_norm, 1.0));
+        assert(
+            almost_equal(
+                std::sqrt(squared_norm),
+                1.0
+            )
+        );
     }
 }
-
 void test_zero_row() {
     ml::Matrix data{
         {0.0, 0.0},

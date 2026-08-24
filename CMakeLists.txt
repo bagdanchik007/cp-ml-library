@@ -248,6 +248,14 @@ add_ml_test(
     umbrella_header_tests
     tests/api/umbrella_header_tests.cpp
 )
+# -------------------------------------------------
+# MinMaxScaler tests
+# -------------------------------------------------
+
+add_ml_test(
+    min_max_scaler_tests
+    tests/preprocessing/min_max_scaler_tests.cpp
+)
 
 # -------------------------------------------------
 # Compiler warnings

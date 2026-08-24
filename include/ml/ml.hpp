@@ -14,6 +14,7 @@
 #include "preprocessing/standard_scaler.hpp"
 #include "preprocessing/min_max_scaler.hpp"
 #include "preprocessing/normalizer.hpp"
+#include "preprocessing/robust_scaler.hpp"
 
 namespace ml {
 

@@ -14,7 +14,7 @@ bool almost_equal(
     return std::abs(a - b) < epsilon;
 }
 
-void test_normalize_rows() {
+void test_row_normalization() {
     ml::Matrix data{
         {3.0, 4.0},
         {5.0, 12.0}
@@ -34,7 +34,8 @@ void test_normalize_rows() {
 
 void test_unit_norm() {
     ml::Matrix data{
-        {3.0, 4.0}
+        {3.0, 4.0},
+        {1.0, 2.0, 2.0}
     };
 
     ml::Normalizer normalizer;
@@ -42,13 +43,16 @@ void test_unit_norm() {
     const ml::Matrix result =
         normalizer.transform(data);
 
-    const double norm =
-        std::sqrt(
-            result(0, 0) * result(0, 0) +
-            result(0, 1) * result(0, 1)
-        );
+    for (size_t row = 0; row < result.rows; ++row) {
+        double squared_norm = 0.0;
 
-    assert(almost_equal(norm, 1.0));
+        for (size_t column = 0; column < result.cols; ++column) {
+            squared_norm +=
+                result(row, column) * result(row, column);
+        }
+
+        assert(almost_equal(squared_norm, 1.0));
+    }
 }
 
 void test_zero_row() {
@@ -64,6 +68,7 @@ void test_zero_row() {
 
     assert(almost_equal(result(0, 0), 0.0));
     assert(almost_equal(result(0, 1), 0.0));
+
     assert(almost_equal(result(1, 0), 0.6));
     assert(almost_equal(result(1, 1), 0.8));
 }
@@ -85,7 +90,7 @@ void test_empty_input() {
 } // namespace
 
 int main() {
-    test_normalize_rows();
+    test_row_normalization();
     test_unit_norm();
     test_zero_row();
     test_empty_input();

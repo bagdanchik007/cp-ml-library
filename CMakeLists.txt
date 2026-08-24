@@ -266,6 +266,15 @@ add_ml_test(
 )
 
 # -------------------------------------------------
+# OneHotEncoder tests
+# -------------------------------------------------
+
+add_ml_test(
+    one_hot_encoder_tests
+    tests/preprocessing/one_hot_encoder_tests.cpp
+)
+
+# -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
 

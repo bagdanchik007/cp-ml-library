@@ -178,6 +178,15 @@ add_ml_test(
 )
 
 # -------------------------------------------------
+# Normalizer tests
+# -------------------------------------------------
+
+add_ml_test(
+    normalizer_tests
+    tests/preprocessing/normalizer_tests.cpp
+)
+
+# -------------------------------------------------
 # Matrix linear algebra tests
 # -------------------------------------------------
 

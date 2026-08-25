@@ -136,6 +136,78 @@ void test_empty_input() {
 
     assert(threw);
 }
+void test_categories_are_sorted() {
+    ml::OneHotEncoder encoder;
+
+    const std::vector<int> labels{
+        30,
+        10,
+        20
+    };
+
+    const ml::Matrix result =
+        encoder.fit_transform(labels);
+
+    assert(result.rows == 3);
+    assert(result.cols == 3);
+
+    // Categories: 10, 20, 30
+    assert(result(0, 2) == 1.0);
+    assert(result(1, 0) == 1.0);
+    assert(result(2, 1) == 1.0);
+}
+
+void test_unknown_label() {
+    ml::OneHotEncoder encoder;
+
+    encoder.fit({
+        10,
+        20,
+        30
+    });
+
+    bool threw = false;
+
+    try {
+        encoder.transform({
+            40
+        });
+    } catch (const std::invalid_argument&) {
+        threw = true;
+    }
+
+    assert(threw);
+}
+
+void test_transform_before_fit() {
+    ml::OneHotEncoder encoder;
+
+    bool threw = false;
+
+    try {
+        encoder.transform({
+            10
+        });
+    } catch (const std::logic_error&) {
+        threw = true;
+    }
+
+    assert(threw);
+}
+
+void test_empty_fit() {
+    ml::OneHotEncoder encoder;
+
+    bool threw = false;
+
+    try {
+        encoder.fit({});
+    } catch (const std::invalid_argument&) {
+        threw = true;
+    }
+
+    assert(threw);
+}
 
 } // namespace
 
@@ -146,6 +218,6 @@ int main() {
     test_transform_before_fit();
     test_unknown_category();
     test_empty_input();
-
+    test_empty_fit();
     return 0;
 }

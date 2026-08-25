@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <stdexcept>
+#include <algorithm>
+#include <vector>
 
 namespace {
 
@@ -15,7 +17,7 @@ void test_default_split() {
     };
 
     const ml::TrainTestSplit result =
-        ml::train_test_split(data);
+        ml::train_test_split(data, 0.2, false);
 
     assert(result.x_train.rows == 4);
     assert(result.x_train.cols == 2);
@@ -39,7 +41,7 @@ void test_custom_split() {
     };
 
     const ml::TrainTestSplit result =
-        ml::train_test_split(data, 0.5);
+        ml::train_test_split(data, 0.5, false);
 
     assert(result.x_train.rows == 2);
     assert(result.x_test.rows == 2);
@@ -99,19 +101,27 @@ void test_shuffle() {
     assert(result.x_train.rows == 7);
     assert(result.x_test.rows == 3);
 
-    bool order_changed = false;
+    std::vector<double> values;
 
     for (size_t row = 0; row < result.x_train.rows; ++row) {
-        if (result.x_train(row, 0) !=
-            data(row, 0)) {
-            order_changed = true;
-            break;
-        }
+        values.push_back(result.x_train(row, 0));
     }
 
-    assert(order_changed);
-}
+    for (size_t row = 0; row < result.x_test.rows; ++row) {
+        values.push_back(result.x_test(row, 0));
+    }
 
+    assert(values.size() == 10);
+
+    std::sort(
+        values.begin(),
+        values.end()
+    );
+
+    for (size_t i = 0; i < values.size(); ++i) {
+        assert(values[i] == static_cast<double>(i + 1));
+    }
+}
 void test_reproducible_shuffle() {
     ml::Matrix data{
         {1.0},

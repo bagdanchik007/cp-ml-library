@@ -22,6 +22,7 @@ add_library(
     ml_library
     src/algorithms/linear_regression.cpp
     src/algorithms/kmeans.cpp
+    src/feature_selection/f_regression.cpp
 )
 
 target_include_directories(

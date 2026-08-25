@@ -3,6 +3,7 @@
 #include "ml/core/matrix/matrix.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <stdexcept>
 #include <vector>
 
@@ -34,7 +35,7 @@ inline void OneHotEncoder::fit(
 ) {
     if (labels.empty()) {
         throw std::invalid_argument(
-            "OneHotEncoder::fit: labels must not be empty"
+            "OneHotEncoder::fit: input labels must not be empty"
         );
     }
 
@@ -71,15 +72,15 @@ inline Matrix OneHotEncoder::transform(
     );
 
     for (size_t row = 0; row < labels.size(); ++row) {
-        const auto iterator = std::find(
+        const auto it = std::lower_bound(
             categories_.begin(),
             categories_.end(),
             labels[row]
         );
 
-        if (iterator == categories_.end()) {
+        if (it == categories_.end() || *it != labels[row]) {
             throw std::invalid_argument(
-                "OneHotEncoder::transform: unknown category"
+                "OneHotEncoder::transform: unknown label"
             );
         }
 
@@ -87,7 +88,7 @@ inline Matrix OneHotEncoder::transform(
             static_cast<size_t>(
                 std::distance(
                     categories_.begin(),
-                    iterator
+                    it
                 )
             );
 

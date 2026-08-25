@@ -313,6 +313,13 @@ add_ml_test(
     binarizer_tests
     tests/preprocessing/binarizer_tests.cpp
 )
+#----------------------------------------------------
+# Variance Threshold Test
+#----------------------------------------------------
+add_ml_test(
+        variance_threshold_tests
+    tests/feature_selection/variance_threshold_tests.cpp
+)
 #------------------------------------------------------
 #Max ABS scaler test
 #--------------------------------------------------

@@ -313,6 +313,13 @@ add_ml_test(
     binarizer_tests
     tests/preprocessing/binarizer_tests.cpp
 )
+#------------------------------------------------------
+#Max ABS scaler test
+#--------------------------------------------------
+add_ml_test(
+    max_abs_scaler_tests
+    tests/preprocessing/max_abs_scaler_tests.cpp
+)
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------

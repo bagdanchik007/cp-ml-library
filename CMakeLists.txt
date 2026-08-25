@@ -292,6 +292,15 @@ add_ml_test(
 )
 
 # -------------------------------------------------
+# PolynomialFeatures tests
+# -------------------------------------------------
+
+add_ml_test(
+    polynomial_features_tests
+    tests/preprocessing/polynomial_features_tests.cpp
+)
+
+# -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
 

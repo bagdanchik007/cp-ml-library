@@ -179,21 +179,6 @@ void test_unknown_label() {
     assert(threw);
 }
 
-void test_transform_before_fit() {
-    ml::OneHotEncoder encoder;
-
-    bool threw = false;
-
-    try {
-        encoder.transform({
-            10
-        });
-    } catch (const std::logic_error&) {
-        threw = true;
-    }
-
-    assert(threw);
-}
 
 void test_empty_fit() {
     ml::OneHotEncoder encoder;

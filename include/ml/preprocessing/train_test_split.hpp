@@ -2,8 +2,13 @@
 
 #include "ml/core/matrix/matrix.hpp"
 
+#include <algorithm>
 #include <cmath>
+#include <cstddef>
+#include <numeric>
+#include <random>
 #include <stdexcept>
+#include <vector>
 
 namespace ml {
 
@@ -14,7 +19,9 @@ struct TrainTestSplit {
 
 inline TrainTestSplit train_test_split(
     const Matrix& data,
-    double test_size = 0.2
+    double test_size = 0.2,
+    bool shuffle = true,
+    unsigned int seed = 42
 ) {
     if (data.rows == 0 || data.cols == 0) {
         throw std::invalid_argument(
@@ -35,11 +42,30 @@ inline TrainTestSplit train_test_split(
             )
         );
 
-    const size_t train_rows = data.rows - test_rows;
+    const size_t train_rows =
+        data.rows - test_rows;
 
     if (train_rows == 0 || test_rows == 0) {
         throw std::invalid_argument(
             "train_test_split: split produced an empty dataset"
+        );
+    }
+
+    std::vector<size_t> indices(data.rows);
+
+    std::iota(
+        indices.begin(),
+        indices.end(),
+        0
+    );
+
+    if (shuffle) {
+        std::mt19937 generator(seed);
+
+        std::shuffle(
+            indices.begin(),
+            indices.end(),
+            generator
         );
     }
 
@@ -48,14 +74,15 @@ inline TrainTestSplit train_test_split(
 
     for (size_t row = 0; row < train_rows; ++row) {
         for (size_t column = 0; column < data.cols; ++column) {
-            x_train(row, column) = data(row, column);
+            x_train(row, column) =
+                data(indices[row], column);
         }
     }
 
     for (size_t row = 0; row < test_rows; ++row) {
         for (size_t column = 0; column < data.cols; ++column) {
             x_test(row, column) =
-                data(train_rows + row, column);
+                data(indices[train_rows + row], column);
         }
     }
 

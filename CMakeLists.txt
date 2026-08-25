@@ -282,6 +282,14 @@ add_ml_test(
     train_test_split_tests
     tests/preprocessing/train_test_split_tests.cpp
 )
+# -------------------------------------------------
+# LabelEncoder tests
+# -------------------------------------------------
+
+add_ml_test(
+    label_encoder_tests
+    tests/preprocessing/label_encoder_tests.cpp
+)
 
 # -------------------------------------------------
 # Compiler warnings

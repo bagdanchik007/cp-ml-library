@@ -335,6 +335,14 @@ add_ml_test(
     max_abs_scaler_tests
     tests/preprocessing/max_abs_scaler_tests.cpp
 )
+# -------------------------------------------------#
+# F-Regression tests
+# -------------------------------------------------#
+
+add_ml_test(
+    f_regression_tests
+    tests/feature_selection/f_regression_tests.cpp
+)
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------

@@ -92,6 +92,60 @@ void test_empty_input() {
     assert(threw);
 }
 
+void test_l1_norm() {
+    ml::Matrix data{
+        {2.0, 3.0},
+        {-4.0, 1.0}
+    };
+
+    ml::Normalizer normalizer;
+
+    const ml::Matrix result =
+        normalizer.transform(data, ml::Norm::L1);
+
+    assert(almost_equal(result(0, 0), 2.0 / 5.0));
+    assert(almost_equal(result(0, 1), 3.0 / 5.0));
+
+    assert(almost_equal(result(1, 0), -4.0 / 5.0));
+    assert(almost_equal(result(1, 1), 1.0 / 5.0));
+}
+
+void test_l2_norm() {
+    ml::Matrix data{
+        {3.0, 4.0},
+        {5.0, 12.0}
+    };
+
+    ml::Normalizer normalizer;
+
+    const ml::Matrix result =
+        normalizer.transform(data, ml::Norm::L2);
+
+    assert(almost_equal(result(0, 0), 0.6));
+    assert(almost_equal(result(0, 1), 0.8));
+
+    assert(almost_equal(result(1, 0), 5.0 / 13.0));
+    assert(almost_equal(result(1, 1), 12.0 / 13.0));
+}
+
+void test_max_norm() {
+    ml::Matrix data{
+        {2.0, -4.0},
+        {10.0, 5.0}
+    };
+
+    ml::Normalizer normalizer;
+
+    const ml::Matrix result =
+        normalizer.transform(data, ml::Norm::Max);
+
+    assert(almost_equal(result(0, 0), 0.5));
+    assert(almost_equal(result(0, 1), -1.0));
+
+    assert(almost_equal(result(1, 0), 1.0));
+    assert(almost_equal(result(1, 1), 0.5));
+}
+
 } // namespace
 
 int main() {
@@ -99,6 +153,6 @@ int main() {
     test_unit_norm();
     test_zero_row();
     test_empty_input();
-
+    test_max_norm();
     return 0;
 }

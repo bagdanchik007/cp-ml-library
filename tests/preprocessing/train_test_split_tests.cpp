@@ -79,6 +79,73 @@ void test_empty_input() {
 
     assert(threw);
 }
+void test_shuffle() {
+    ml::Matrix data{
+        {1.0},
+        {2.0},
+        {3.0},
+        {4.0},
+        {5.0},
+        {6.0},
+        {7.0},
+        {8.0},
+        {9.0},
+        {10.0}
+    };
+
+    const ml::TrainTestSplit result =
+        ml::train_test_split(data, 0.3, true, 42);
+
+    assert(result.x_train.rows == 7);
+    assert(result.x_test.rows == 3);
+
+    bool order_changed = false;
+
+    for (size_t row = 0; row < result.x_train.rows; ++row) {
+        if (result.x_train(row, 0) !=
+            data(row, 0)) {
+            order_changed = true;
+            break;
+        }
+    }
+
+    assert(order_changed);
+}
+
+void test_reproducible_shuffle() {
+    ml::Matrix data{
+        {1.0},
+        {2.0},
+        {3.0},
+        {4.0},
+        {5.0},
+        {6.0},
+        {7.0},
+        {8.0},
+        {9.0},
+        {10.0}
+    };
+
+    const ml::TrainTestSplit first =
+        ml::train_test_split(data, 0.3, true, 123);
+
+    const ml::TrainTestSplit second =
+        ml::train_test_split(data, 0.3, true, 123);
+
+    for (size_t row = 0; row < first.x_train.rows; ++row) {
+        assert(
+            first.x_train(row, 0) ==
+            second.x_train(row, 0)
+        );
+    }
+
+    for (size_t row = 0; row < first.x_test.rows; ++row) {
+        assert(
+            first.x_test(row, 0) ==
+            second.x_test(row, 0)
+        );
+    }
+}
 
 } // namespace
 
@@ -87,6 +154,8 @@ int main() {
     test_custom_split();
     test_invalid_test_size();
     test_empty_input();
+    test_shuffle();
+    test_reproducible_shuffle();
 
     return 0;
 }

@@ -321,6 +321,13 @@ add_ml_test(
     tests/feature_selection/variance_threshold_tests.cpp
 )
 #------------------------------------------------------
+#SELECT K BEST
+#------------------------------------------------------
+add_ml_test(
+            select_k_best_tests
+    tests/feature_selection/select_k_best_tests.cpp
+)
+#------------------------------------------------------
 #Max ABS scaler test
 #--------------------------------------------------
 add_ml_test(

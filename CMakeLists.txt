@@ -275,6 +275,15 @@ add_ml_test(
 )
 
 # -------------------------------------------------
+# Train/Test Split tests
+# -------------------------------------------------
+
+add_ml_test(
+    train_test_split_tests
+    tests/preprocessing/train_test_split_tests.cpp
+)
+
+# -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
 

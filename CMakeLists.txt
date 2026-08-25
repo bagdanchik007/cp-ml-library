@@ -299,7 +299,13 @@ add_ml_test(
     polynomial_features_tests
     tests/preprocessing/polynomial_features_tests.cpp
 )
-
+#---------------------------------------------------
+#simple Imputer test
+#----------------------------------------------------
+add_ml_test(
+    simple_imputer_tests
+    tests/preprocessing/simple_imputer_tests.cpp
+)
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------

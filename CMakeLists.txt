@@ -306,6 +306,13 @@ add_ml_test(
     simple_imputer_tests
     tests/preprocessing/simple_imputer_tests.cpp
 )
+#---------------------------------------------------
+#Binarizer test
+#----------------------------------------------------
+add_ml_test(
+    binarizer_tests
+    tests/preprocessing/binarizer_tests.cpp
+)
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------

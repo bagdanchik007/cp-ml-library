@@ -252,6 +252,11 @@ add_ml_test(
     tests/feature_selection/select_percentile_tests.cpp
 )
 
+add_ml_test(
+    chi2_tests
+    tests/feature_selection/chi2_tests.cpp
+)
+
 # -------------------------------------------------
 # API tests
 # -------------------------------------------------
@@ -334,6 +339,7 @@ set(
     select_k_best_tests
     f_regression_tests
     select_percentile_tests
+    chi2_tests
 
     # API tests
     umbrella_header_tests

@@ -28,9 +28,7 @@ void SelectFromModel::fit(
          ++feature) {
 
         if (scores[feature] >= threshold_) {
-            selected_features_.push_back(
-                feature
-            );
+            selected_features_.push_back(feature);
         }
     }
 
@@ -52,6 +50,15 @@ Matrix SelectFromModel::transform(
             "SelectFromModel::transform: "
             "input data must not be empty"
         );
+    }
+
+    for (const std::size_t feature : selected_features_) {
+        if (feature >= data.cols) {
+            throw std::invalid_argument(
+                "SelectFromModel::transform: "
+                "input column count does not match fitted scores"
+            );
+        }
     }
 
     Matrix result(
@@ -83,7 +90,12 @@ Matrix SelectFromModel::fit_transform(
     const std::vector<double>& scores
 )
 {
-    fit(scores);
+    if (data.rows == 0 || data.cols == 0) {
+        throw std::invalid_argument(
+            "SelectFromModel::fit_transform: "
+            "input data must not be empty"
+        );
+    }
 
     if (data.cols != scores.size()) {
         throw std::invalid_argument(
@@ -91,6 +103,8 @@ Matrix SelectFromModel::fit_transform(
             "number of scores must match input columns"
         );
     }
+
+    fit(scores);
 
     return transform(data);
 }

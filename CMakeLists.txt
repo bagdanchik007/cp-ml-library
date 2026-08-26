@@ -25,6 +25,7 @@ add_library(
     src/feature_selection/f_regression.cpp
     src/feature_selection/select_percentile.cpp
     src/feature_selection/chi2.cpp
+    src/feature_selection/mutual_info.cpp
 )
 
 target_include_directories(

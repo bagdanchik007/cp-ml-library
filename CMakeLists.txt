@@ -25,6 +25,7 @@ add_library(
     src/feature_selection/f_regression.cpp
     src/feature_selection/select_percentile.cpp
     src/feature_selection/chi2.cpp
+    src/feature_selection/generic_univariate_selector.cpp
     src/feature_selection/mutual_info.cpp
     src/feature_selection/select_from_model.cpp
 )
@@ -264,6 +265,11 @@ add_ml_test(
     tests/feature_selection/chi2_tests.cpp
 )
 
+add_ml_test(
+    generic_univariate_selector_tests
+    tests/feature_selection/generic_univariate_selector_tests.cpp
+)
+
 # -------------------------------------------------
 # API tests
 # -------------------------------------------------
@@ -346,8 +352,9 @@ set(
     select_k_best_tests
     f_regression_tests
     select_percentile_tests
-    chi2_tests
     mutual_info_tests
+    chi2_tests
+    generic_univariate_selector_tests
 
     # API tests
     umbrella_header_tests

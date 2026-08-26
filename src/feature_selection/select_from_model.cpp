@@ -1,124 +1,173 @@
 #include "ml/feature_selection/select_from_model.hpp"
+#include "ml/core/matrix/matrix.hpp"
 
+#include <cassert>
+#include <iostream>
 #include <stdexcept>
+#include <vector>
 
-namespace ml {
+namespace {
 
-SelectFromModel::SelectFromModel(
-    double threshold
-)
-    : threshold_(threshold)
+void test_select_features()
 {
+    ml::SelectFromModel selector(0.5);
+
+    const std::vector<double> scores = {
+        0.2,
+        0.8,
+        0.5,
+        0.1
+    };
+
+    selector.fit(scores);
+
+    const auto& selected =
+        selector.selected_features();
+
+    assert(selected.size() == 2);
+    assert(selected[0] == 1);
+    assert(selected[1] == 2);
 }
 
-void SelectFromModel::fit(
-    const std::vector<double>& scores
-)
+void test_transform()
 {
-    if (scores.empty()) {
-        throw std::invalid_argument(
-            "SelectFromModel: scores must not be empty"
-        );
-    }
+    ml::Matrix data(2, 3);
 
-    selected_features_.clear();
+    data(0, 0) = 1.0;
+    data(0, 1) = 2.0;
+    data(0, 2) = 3.0;
 
-    for (std::size_t feature = 0;
-         feature < scores.size();
-         ++feature) {
+    data(1, 0) = 4.0;
+    data(1, 1) = 5.0;
+    data(1, 2) = 6.0;
 
-        if (scores[feature] >= threshold_) {
-            selected_features_.push_back(feature);
-        }
-    }
+    ml::SelectFromModel selector(0.5);
 
-    fitted_ = true;
+    selector.fit({
+        0.2,
+        0.8,
+        0.6
+    });
+
+    const ml::Matrix result =
+        selector.transform(data);
+
+    assert(result.rows == 2);
+    assert(result.cols == 2);
+
+    assert(result(0, 0) == 2.0);
+    assert(result(0, 1) == 3.0);
+
+    assert(result(1, 0) == 5.0);
+    assert(result(1, 1) == 6.0);
 }
 
-Matrix SelectFromModel::transform(
-    const Matrix& data
-) const
+void test_fit_transform()
 {
-        throw std::logic_error(
-            "SelectFromModel::transform: "
-            "selector has not been fitted"
+    ml::Matrix data(2, 3);
+
+    data(0, 0) = 1.0;
+    data(0, 1) = 2.0;
+    data(0, 2) = 3.0;
+
+    data(1, 0) = 4.0;
+    data(1, 1) = 5.0;
+    data(1, 2) = 6.0;
+
+    ml::SelectFromModel selector(0.7);
+
+    const ml::Matrix result =
+        selector.fit_transform(
+            data,
+            {
+                0.9,
+                0.4,
+                0.8
+            }
         );
-    }
 
-    if (data.rows == 0 || data.cols == 0) {
-        throw std::invalid_argument(
-            "SelectFromModel::transform: "
-            "input data must not be empty"
-        );
-    }
+    assert(result.rows == 2);
+    assert(result.cols == 2);
 
-    for (const std::size_t feature : selected_features_) {
-        if (feature >= data.cols) {
-            throw std::invalid_argument(
-                "SelectFromModel::transform: "
-                "input column count does not match fitted scores"
-            );
-        }
-    }
+    assert(result(0, 0) == 1.0);
+    assert(result(0, 1) == 3.0);
 
-    Matrix result(
-        data.rows,
-        selected_features_.size()
-    );
-
-    for (std::size_t row = 0;
-         row < data.rows;
-         ++row) {
-
-        for (std::size_t column = 0;
-             column < selected_features_.size();
-             ++column) {
-
-            const std::size_t feature =
-                selected_features_[column];
-
-            result(row, column) =
-                data(row, feature);
-        }
-    }
-
-    return result;
+    assert(result(1, 0) == 4.0);
+    assert(result(1, 1) == 6.0);
 }
 
-Matrix SelectFromModel::fit_transform(
-    const Matrix& data,
-    const std::vector<double>& scores
-)
+void test_transform_before_fit()
 {
-    if (data.rows == 0 || data.cols == 0) {
-        throw std::invalid_argument(
-            "SelectFromModel::fit_transform: "
-            "input data must not be empty"
-        );
+    ml::Matrix data(1, 1);
+    data(0, 0) = 1.0;
+
+    ml::SelectFromModel selector(0.5);
+
+    bool thrown = false;
+
+    try {
+        selector.transform(data);
+    }
+    catch (const std::logic_error&) {
+        thrown = true;
     }
 
-    if (data.cols != scores.size()) {
-        throw std::invalid_argument(
-            "SelectFromModel::fit_transform: "
-            "number of scores must match input columns"
-        );
-    }
-
-    fit(scores);
-
-    return transform(data);
+    assert(thrown);
 }
 
-const std::vector<std::size_t>&
-SelectFromModel::selected_features() const
+void test_empty_scores()
 {
-        throw std::logic_error(
-            "SelectFromModel::selected_features: "
-            "selector has not been fitted"
-        );
+    ml::SelectFromModel selector(0.5);
+
+    bool thrown = false;
+
+    try {
+        selector.fit({});
+    }
+    catch (const std::invalid_argument&) {
+        thrown = true;
     }
 
-    return selected_features_;
+    assert(thrown);
 }
 
-} // namespace ml
+void test_invalid_score_count()
+{
+    ml::Matrix data(2, 3);
+
+    ml::SelectFromModel selector(0.5);
+
+    bool thrown = false;
+
+    try {
+        selector.fit_transform(
+            data,
+            {
+                0.5,
+                0.8
+            }
+        );
+    }
+    catch (const std::invalid_argument&) {
+        thrown = true;
+    }
+
+    assert(thrown);
+}
+
+} // namespace
+
+int main()
+{
+    test_select_features();
+    test_transform();
+    test_fit_transform();
+    test_transform_before_fit();
+    test_empty_scores();
+    test_invalid_score_count();
+
+    std::cout
+        << "All SelectFromModel tests passed.\n";
+
+    return 0;
+}

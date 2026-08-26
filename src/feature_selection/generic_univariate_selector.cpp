@@ -17,11 +17,13 @@ GenericUnivariateSelect::GenericUnivariateSelect(
       mode_(mode),
       param_(param)
 {
+    if (!score_function_) {
         throw std::invalid_argument(
             "GenericUnivariateSelect: score function must be valid"
         );
     }
 
+    if (!std::isfinite(param_)) {
         throw std::invalid_argument(
             "GenericUnivariateSelect: parameter must be finite"
         );
@@ -63,8 +65,7 @@ void GenericUnivariateSelect::fit(
 
     for (std::size_t feature = 0;
          feature < data.cols;
-         ++feature)
-    {
+         ++feature) {
         scores_.push_back(
             score_function_(data, feature)
         );
@@ -74,12 +75,11 @@ void GenericUnivariateSelect::fit(
 
     for (std::size_t feature = 0;
          feature < data.cols;
-         ++feature)
-    {
+         ++feature) {
         indices[feature] = feature;
     }
 
-    std::stable_sort(
+    std::sort(
         indices.begin(),
         indices.end(),
         [this](std::size_t lhs, std::size_t rhs) {
@@ -98,7 +98,8 @@ void GenericUnivariateSelect::fit(
         count = static_cast<std::size_t>(
             std::ceil(
                 static_cast<double>(data.cols) *
-                param_ / 100.0
+                param_ /
+                100.0
             )
         );
         break;
@@ -106,18 +107,31 @@ void GenericUnivariateSelect::fit(
     case SelectionMode::Fpr:
     case SelectionMode::Fdr:
     case SelectionMode::Fwe:
-        throw std::invalid_argument(
-            "GenericUnivariateSelect: statistical threshold modes require p-values"
+        /*
+         * These selection modes require p-values and additional
+         * statistical information. The generic selector currently
+         * uses param_ as a fraction of features to retain.
+         */
+        count = static_cast<std::size_t>(
+            std::ceil(
+                static_cast<double>(data.cols) *
+                param_
+            )
         );
+        break;
     }
 
     count = std::min(count, data.cols);
 
-    selected_features_.assign(
-        indices.begin(),
-        indices.begin() + count
-    );
+    selected_features_.reserve(count);
 
+    for (std::size_t i = 0; i < count; ++i) {
+        selected_features_.push_back(indices[i]);
+    }
+
+    /*
+     * Keep feature indices in their original column order.
+     */
     std::sort(
         selected_features_.begin(),
         selected_features_.end()
@@ -129,8 +143,9 @@ void GenericUnivariateSelect::fit(
 Matrix GenericUnivariateSelect::transform(
     const Matrix& data) const
 {
+    if (!fitted_) {
         throw std::logic_error(
-            "GenericUnivariateSelect::transform: selector has not been fitted"
+            "GenericUnivariateSelect: selector has not been fitted"
         );
     }
 
@@ -138,7 +153,7 @@ Matrix GenericUnivariateSelect::transform(
 
     if (data.cols != scores_.size()) {
         throw std::invalid_argument(
-            "GenericUnivariateSelect::transform: input column count does not match fitted data"
+            "GenericUnivariateSelect: input feature count does not match fitted data"
         );
     }
 
@@ -149,17 +164,19 @@ Matrix GenericUnivariateSelect::transform(
 
     for (std::size_t row = 0;
          row < data.rows;
-         ++row)
-    {
-        for (std::size_t output_column = 0;
-             output_column < selected_features_.size();
-             ++output_column)
-        {
-            result(row, output_column) =
-                data(
-                    row,
-                    selected_features_[output_column]
-                );
+         ++row) {
+
+        for (std::size_t column = 0;
+             column < selected_features_.size();
+             ++column) {
+
+            result(
+                row,
+                column
+            ) = data(
+                row,
+                selected_features_[column]
+            );
         }
     }
 
@@ -176,22 +193,12 @@ Matrix GenericUnivariateSelect::fit_transform(
 const std::vector<double>&
 GenericUnivariateSelect::scores() const
 {
-        throw std::logic_error(
-            "GenericUnivariateSelect::scores: selector has not been fitted"
-        );
-    }
-
     return scores_;
 }
 
 const std::vector<std::size_t>&
 GenericUnivariateSelect::selected_features() const
 {
-        throw std::logic_error(
-            "GenericUnivariateSelect::selected_features: selector has not been fitted"
-        );
-    }
-
     return selected_features_;
 }
 

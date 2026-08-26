@@ -8,38 +8,49 @@
 
 namespace ml {
 
-class GenericUnivariateSelector {
+using UnivariateScoreFunction =
+    std::function<double(
+        const Matrix& data,
+        std::size_t feature
+    )>;
+
+enum class SelectionMode {
+    Percentile,
+    KBest,
+    Fpr,
+    Fdr,
+    Fwe
+};
+
+class GenericUnivariateSelect {
 public:
-    using ScoreFunction =
-        std::function<std::vector<double>(
-            const Matrix& X,
-            const Matrix& y
-        )>;
-
-    explicit GenericUnivariateSelector(
-        ScoreFunction score_function
+    GenericUnivariateSelect(
+        UnivariateScoreFunction score_function,
+        SelectionMode mode,
+        double param
     );
 
-    void fit(
-        const Matrix& X,
-        const Matrix& y
-    );
+    void fit(const Matrix& data);
 
-    Matrix transform(
-        const Matrix& X
-    ) const;
+    Matrix transform(const Matrix& data) const;
 
-    Matrix fit_transform(
-        const Matrix& X,
-        const Matrix& y
-    );
+    Matrix fit_transform(const Matrix& data);
 
-    const std::vector<std::size_t>&
-    selected_features() const noexcept;
+    const std::vector<double>& scores() const;
 
-protected:
-    ScoreFunction score_function_;
+    const std::vector<std::size_t>& selected_features() const;
+
+private:
+    void validate_input(const Matrix& data) const;
+
+    UnivariateScoreFunction score_function_;
+    SelectionMode mode_;
+    double param_;
+
+    std::vector<double> scores_;
     std::vector<std::size_t> selected_features_;
+
+    bool fitted_ = false;
 };
 
 } // namespace ml

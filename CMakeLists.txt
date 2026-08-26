@@ -24,6 +24,7 @@ add_library(
     src/algorithms/kmeans.cpp
     src/feature_selection/f_regression.cpp
     src/feature_selection/select_percentile.cpp
+    src/feature_selection/chi2.cpp
 )
 
 target_include_directories(

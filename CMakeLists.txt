@@ -20,11 +20,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(
     ml_library
+
     src/algorithms/linear_regression.cpp
     src/algorithms/kmeans.cpp
+
     src/feature_selection/f_regression.cpp
     src/feature_selection/select_percentile.cpp
     src/feature_selection/select_fpr.cpp
+    src/feature_selection/select_fdr.cpp
     src/feature_selection/chi2.cpp
     src/feature_selection/generic_univariate_selector.cpp
     src/feature_selection/mutual_info.cpp
@@ -44,6 +47,7 @@ target_include_directories(
 
 add_executable(
     ml_demo
+
     examples/demo.cpp
     examples/linear_regression_demo.cpp
     examples/kmeans_demo.cpp
@@ -262,6 +266,11 @@ add_ml_test(
 )
 
 add_ml_test(
+    select_fdr_tests
+    tests/feature_selection/select_fdr_tests.cpp
+)
+
+add_ml_test(
     mutual_info_tests
     tests/feature_selection/mutual_info_tests.cpp
 )
@@ -359,6 +368,7 @@ set(
     f_regression_tests
     select_percentile_tests
     select_fpr_tests
+    select_fdr_tests
     mutual_info_tests
     chi2_tests
     generic_univariate_selector_tests
@@ -385,6 +395,7 @@ include(GNUInstallDirs)
 
 install(
     TARGETS ml_library
+
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

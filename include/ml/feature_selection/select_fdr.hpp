@@ -31,6 +31,7 @@ public:
 private:
     double alpha_;
     std::vector<std::size_t> selected_features_;
+    bool fitted_ = false;
 };
 
 } // namespace ml

@@ -24,6 +24,7 @@ add_library(
     src/algorithms/kmeans.cpp
     src/feature_selection/f_regression.cpp
     src/feature_selection/select_percentile.cpp
+    src/feature_selection/select_fpr.cpp
     src/feature_selection/chi2.cpp
     src/feature_selection/generic_univariate_selector.cpp
     src/feature_selection/mutual_info.cpp
@@ -256,6 +257,11 @@ add_ml_test(
 )
 
 add_ml_test(
+    select_fpr_tests
+    tests/feature_selection/select_fpr_tests.cpp
+)
+
+add_ml_test(
     mutual_info_tests
     tests/feature_selection/mutual_info_tests.cpp
 )
@@ -352,6 +358,7 @@ set(
     select_k_best_tests
     f_regression_tests
     select_percentile_tests
+    select_fpr_tests
     mutual_info_tests
     chi2_tests
     generic_univariate_selector_tests

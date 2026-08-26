@@ -25,11 +25,16 @@ public:
         const Matrix& y
     );
 
-    const std::vector<std::size_t>& selected_features() const noexcept;
+    const std::vector<double>& scores() const;
+    const std::vector<std::size_t>& selected_features() const;
 
 private:
     double percentile_;
+
+    std::vector<double> scores_;
     std::vector<std::size_t> selected_features_;
+
+    bool fitted_ = false;
 };
 
 } // namespace ml

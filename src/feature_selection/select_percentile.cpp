@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <limits>
 #include <stdexcept>
 #include <vector>
 
@@ -57,7 +58,19 @@ void SelectPercentile::fit(
     const FRegressionResult result =
         f_regression(X, y);
 
-    scores_ = result.scores;
+    scores_.clear();
+    scores_.reserve(result.scores.size());
+
+    for (const double score : result.scores) {
+        if (std::isinf(score)) {
+            scores_.push_back(
+                std::numeric_limits<double>::max()
+            );
+        } else {
+            scores_.push_back(score);
+        }
+    }
+
     selected_features_.clear();
 
     const std::size_t feature_count = X.cols;

@@ -23,6 +23,7 @@ add_library(
     src/algorithms/linear_regression.cpp
     src/algorithms/kmeans.cpp
     src/feature_selection/f_regression.cpp
+    src/feature_selection/select_percentile.cpp
 )
 
 target_include_directories(
@@ -88,126 +89,65 @@ add_ml_test(
     tests/core/matrix/matrix_tests.cpp
 )
 
-# -------------------------------------------------
-# Matrix arithmetic tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_arithmetic_tests
     tests/core/matrix/matrix_arithmetic_tests.cpp
 )
-
-# -------------------------------------------------
-# Matrix utility tests
-# -------------------------------------------------
 
 add_ml_test(
     matrix_utility_tests
     tests/core/matrix/matrix_utility_tests.cpp
 )
 
-# -------------------------------------------------
-# Matrix validation tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_validation_tests
     tests/core/matrix/matrix_validation_tests.cpp
 )
-
-# -------------------------------------------------
-# Matrix transformation tests
-# -------------------------------------------------
 
 add_ml_test(
     matrix_transformation_tests
     tests/core/matrix/matrix_transformation_tests.cpp
 )
 
-# -------------------------------------------------
-# Matrix statistics tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_statistics_tests
     tests/core/matrix/matrix_statistics_tests.cpp
 )
-
-# -------------------------------------------------
-# Matrix norm tests
-# -------------------------------------------------
 
 add_ml_test(
     matrix_norm_tests
     tests/core/matrix/matrix_norm_tests.cpp
 )
 
-# -------------------------------------------------
-# Matrix column tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_column_tests
     tests/core/matrix/matrix_column_tests.cpp
 )
-
-# -------------------------------------------------
-# Matrix row tests
-# -------------------------------------------------
 
 add_ml_test(
     matrix_row_tests
     tests/core/matrix/matrix_row_tests.cpp
 )
 
-# -------------------------------------------------
-# Matrix comparison tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_comparison_tests
     tests/core/matrix/matrix_comparison_tests.cpp
 )
-
-# -------------------------------------------------
-# Matrix scalar tests
-# -------------------------------------------------
 
 add_ml_test(
     matrix_scalar_tests
     tests/core/matrix/matrix_scalar_tests.cpp
 )
 
-# -------------------------------------------------
-# Normalizer tests
-# -------------------------------------------------
-
-add_ml_test(
-    normalizer_tests
-    tests/preprocessing/normalizer_tests.cpp
-)
-
-# -------------------------------------------------
-# Matrix linear algebra tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_linear_algebra_tests
     tests/core/matrix/matrix_linear_algebra_tests.cpp
 )
 
-# -------------------------------------------------
-# Matrix decomposition tests
-# -------------------------------------------------
-
 add_ml_test(
     matrix_decomposition_tests
     tests/core/matrix/matrix_decomposition_tests.cpp
 )
-
-# -------------------------------------------------
-# Matrix solve tests
-# -------------------------------------------------
 
 add_ml_test(
     matrix_solve_tests
@@ -215,7 +155,7 @@ add_ml_test(
 )
 
 # -------------------------------------------------
-# Linear Regression tests
+# Algorithms tests
 # -------------------------------------------------
 
 add_ml_test(
@@ -223,126 +163,103 @@ add_ml_test(
     tests/algorithms/linear_regression_tests.cpp
 )
 
-# -------------------------------------------------
-# K-Means tests
-# -------------------------------------------------
-
 add_ml_test(
     kmeans_tests
     tests/algorithms/kmeans_tests.cpp
 )
 
 # -------------------------------------------------
-# StandardScaler tests
+# Preprocessing tests
 # -------------------------------------------------
+
+add_ml_test(
+    normalizer_tests
+    tests/preprocessing/normalizer_tests.cpp
+)
 
 add_ml_test(
     standard_scaler_tests
     tests/preprocessing/standard_scaler_tests.cpp
 )
 
-# -------------------------------------------------
-# Umbrella header API tests
-# -------------------------------------------------
-
-add_ml_test(
-    umbrella_header_tests
-    tests/api/umbrella_header_tests.cpp
-)
-# -------------------------------------------------
-# MinMaxScaler tests
-# -------------------------------------------------
-
 add_ml_test(
     min_max_scaler_tests
     tests/preprocessing/min_max_scaler_tests.cpp
 )
 
-#--------------------------------------------------
-#RobustScaler tests
-#--------------------------------------------------
 add_ml_test(
     robust_scaler_tests
     tests/preprocessing/robust_scaler_tests.cpp
 )
-
-# -------------------------------------------------
-# OneHotEncoder tests
-# -------------------------------------------------
 
 add_ml_test(
     one_hot_encoder_tests
     tests/preprocessing/one_hot_encoder_tests.cpp
 )
 
-# -------------------------------------------------
-# Train/Test Split tests
-# -------------------------------------------------
-
 add_ml_test(
     train_test_split_tests
     tests/preprocessing/train_test_split_tests.cpp
 )
-# -------------------------------------------------
-# LabelEncoder tests
-# -------------------------------------------------
 
 add_ml_test(
     label_encoder_tests
     tests/preprocessing/label_encoder_tests.cpp
 )
 
-# -------------------------------------------------
-# PolynomialFeatures tests
-# -------------------------------------------------
-
 add_ml_test(
     polynomial_features_tests
     tests/preprocessing/polynomial_features_tests.cpp
 )
-#---------------------------------------------------
-#simple Imputer test
-#----------------------------------------------------
+
 add_ml_test(
     simple_imputer_tests
     tests/preprocessing/simple_imputer_tests.cpp
 )
-#---------------------------------------------------
-#Binarizer test
-#----------------------------------------------------
+
 add_ml_test(
     binarizer_tests
     tests/preprocessing/binarizer_tests.cpp
 )
-#----------------------------------------------------
-# Variance Threshold Test
-#----------------------------------------------------
-add_ml_test(
-        variance_threshold_tests
-    tests/feature_selection/variance_threshold_tests.cpp
-)
-#------------------------------------------------------
-#SELECT K BEST
-#------------------------------------------------------
-add_ml_test(
-            select_k_best_tests
-    tests/feature_selection/select_k_best_tests.cpp
-)
-#------------------------------------------------------
-#Max ABS scaler test
-#--------------------------------------------------
+
 add_ml_test(
     max_abs_scaler_tests
     tests/preprocessing/max_abs_scaler_tests.cpp
 )
-# -------------------------------------------------#
-# F-Regression tests
-# -------------------------------------------------#
+
+# -------------------------------------------------
+# Feature selection tests
+# -------------------------------------------------
+
+add_ml_test(
+    variance_threshold_tests
+    tests/feature_selection/variance_threshold_tests.cpp
+)
+
+add_ml_test(
+    select_k_best_tests
+    tests/feature_selection/select_k_best_tests.cpp
+)
 
 add_ml_test(
     f_regression_tests
     tests/feature_selection/f_regression_tests.cpp
 )
+
+add_ml_test(
+    select_percentile_tests
+    tests/feature_selection/select_percentile_tests.cpp
+)
+
+# -------------------------------------------------
+# API tests
+# -------------------------------------------------
+
+add_ml_test(
+    umbrella_header_tests
+    tests/api/umbrella_header_tests.cpp
+)
+
 # -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
@@ -371,9 +288,14 @@ endif()
 
 set(
     ML_TARGETS
+
+    # Library
     ml_library
+
+    # Demo
     ml_demo
 
+    # Matrix tests
     matrix_tests
     matrix_arithmetic_tests
     matrix_utility_tests
@@ -389,9 +311,30 @@ set(
     matrix_decomposition_tests
     matrix_solve_tests
 
+    # Algorithm tests
     linear_regression_tests
     kmeans_tests
+
+    # Preprocessing tests
+    normalizer_tests
     standard_scaler_tests
+    min_max_scaler_tests
+    robust_scaler_tests
+    one_hot_encoder_tests
+    train_test_split_tests
+    label_encoder_tests
+    polynomial_features_tests
+    simple_imputer_tests
+    binarizer_tests
+    max_abs_scaler_tests
+
+    # Feature selection tests
+    variance_threshold_tests
+    select_k_best_tests
+    f_regression_tests
+    select_percentile_tests
+
+    # API tests
     umbrella_header_tests
 )
 

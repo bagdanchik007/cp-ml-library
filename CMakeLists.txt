@@ -254,6 +254,11 @@ add_ml_test(
 )
 
 add_ml_test(
+    mutual_info_tests
+    tests/feature_selection/mutual_info_tests.cpp
+)
+
+add_ml_test(
     chi2_tests
     tests/feature_selection/chi2_tests.cpp
 )
@@ -341,6 +346,7 @@ set(
     f_regression_tests
     select_percentile_tests
     chi2_tests
+    mutual_info_tests
 
     # API tests
     umbrella_header_tests

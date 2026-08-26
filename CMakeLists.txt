@@ -26,6 +26,7 @@ add_library(
     src/feature_selection/select_percentile.cpp
     src/feature_selection/chi2.cpp
     src/feature_selection/mutual_info.cpp
+    src/feature_selection/select_from_model.cpp
 )
 
 target_include_directories(

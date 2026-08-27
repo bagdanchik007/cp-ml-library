@@ -14,6 +14,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(ML_BUILD_BENCHMARKS "Build local benchmark executables" OFF)
+
 # -------------------------------------------------
 # Library
 # -------------------------------------------------
@@ -178,6 +180,16 @@ add_ml_test(
     tests/algorithms/kmeans_tests.cpp
 )
 
+add_ml_test(
+    tree_ensemble_tests
+    tests/algorithms/tree_ensemble_tests.cpp
+)
+
+add_ml_test(
+    dbscan_tests
+    tests/algorithms/dbscan_tests.cpp
+)
+
 # -------------------------------------------------
 # Preprocessing tests
 # -------------------------------------------------
@@ -296,6 +308,35 @@ add_ml_test(
 )
 
 # -------------------------------------------------
+# Data and metrics tests
+# -------------------------------------------------
+
+add_ml_test(
+    dataset_tests
+    tests/data/dataset_tests.cpp
+)
+
+add_ml_test(
+    model_evaluation_tests
+    tests/metrics/model_evaluation_tests.cpp
+)
+
+add_ml_test(
+    model_selection_tests
+    tests/model_selection/model_selection_tests.cpp
+)
+
+add_ml_test(
+    pipeline_tests
+    tests/pipeline/pipeline_tests.cpp
+)
+
+add_ml_test(
+    train_test_integration_tests
+    tests/integration/train_test_integration_tests.cpp
+)
+
+# -------------------------------------------------
 # Compiler warnings
 # -------------------------------------------------
 
@@ -349,6 +390,8 @@ set(
     # Algorithm tests
     linear_regression_tests
     kmeans_tests
+    tree_ensemble_tests
+    dbscan_tests
 
     # Preprocessing tests
     normalizer_tests
@@ -376,6 +419,13 @@ set(
 
     # API tests
     umbrella_header_tests
+
+    # Data and metrics tests
+    dataset_tests
+    model_evaluation_tests
+    model_selection_tests
+    pipeline_tests
+    train_test_integration_tests
 )
 
 foreach(TARGET_NAME IN LISTS ML_TARGETS)
@@ -393,9 +443,12 @@ endforeach()
 # -------------------------------------------------
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 install(
     TARGETS ml_library
+
+    EXPORT CppMLLibraryTargets
 
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -406,3 +459,38 @@ install(
     DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+install(
+    EXPORT CppMLLibraryTargets
+    FILE CppMLLibraryTargets.cmake
+    NAMESPACE CppMLLibrary::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CppMLLibrary
+)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/CppMLLibraryConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CppMLLibraryConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CppMLLibrary
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/CppMLLibraryConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/CppMLLibraryConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/CppMLLibraryConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/CppMLLibrary
+)
+
+if(ML_BUILD_BENCHMARKS)
+    add_executable(matrix_benchmark benchmarks/matrix_benchmark.cpp)
+    add_executable(algorithm_benchmark benchmarks/algorithm_benchmark.cpp)
+    target_link_libraries(matrix_benchmark PRIVATE ml_library)
+    target_link_libraries(algorithm_benchmark PRIVATE ml_library)
+    target_compile_options(matrix_benchmark PRIVATE ${ML_WARNING_FLAGS})
+    target_compile_options(algorithm_benchmark PRIVATE ${ML_WARNING_FLAGS})
+endif()

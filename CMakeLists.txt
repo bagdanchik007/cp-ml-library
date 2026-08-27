@@ -47,10 +47,11 @@ target_include_directories(
 
 add_executable(
     ml_demo
-
     examples/demo.cpp
     examples/linear_regression_demo.cpp
     examples/kmeans_demo.cpp
+    examples/preprocessing/preprocessing_demo.cpp
+    examples/feature_selection/feature_selection_demo.cpp
 )
 
 target_link_libraries(

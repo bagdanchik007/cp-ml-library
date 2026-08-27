@@ -4,7 +4,6 @@
 #include <vector>
 #include <stdexcept>
 #include <cmath>
-#include "ml/algorithms/linear_regression.hpp"
 namespace ml {
 
 /**

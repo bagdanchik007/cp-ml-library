@@ -1,81 +1,67 @@
 # Cpp ML Library
 
-Eine leichtgewichtige C++-Bibliothek für grundlegende Machine-Learning-Algorithmen mit Fokus auf einer einfachen, modularen und gut wartbaren Struktur.
+A small, dependency-free C++17 machine-learning library. It is designed for learning, experiments and portfolio projects: every algorithm is implemented in readable C++ and the public API is covered by CTest tests.
 
-## Features
+## What is included
 
-* Matrix-Operationen
-* Lineare Regression
-* K-Means Clustering
-* C++17
-* CMake
-* Unit-Tests mit CTest
-* Modulare Projektstruktur
+- Dense `Matrix` type with arithmetic, decompositions, statistics and linear algebra
+- Regression and clustering: linear regression, K-Means and DBSCAN
+- Classification: decision tree and random forest
+- Preprocessing: imputing, scaling, encoding, polynomial features and train/test splitting
+- Feature selection: variance threshold, univariate tests and model-based selectors
+- Data tooling: numeric CSV reader, `Dataset`, K-fold cross-validation and grid search
+- Evaluation: MSE, MAE, R² and classification accuracy
+- A composable supervised `Pipeline` for existing transformers and regressors
 
-## Projektstruktur
-
-```text
-.
-├── include/ml/
-│   ├── core/matrix/
-│   ├── algorithms/
-│   └── ml.hpp
-├── src/
-│   └── algorithms/
-├── tests/
-│   ├── core/matrix/
-│   └── algorithms/
-├── examples/
-├── CMakeLists.txt
-├── LICENSE
-└── README.md
-```
-
-## Build
+## Build and test
 
 ```bash
-cmake -S . -B build
-cmake --build build -j$(nproc)
-```
-
-## Tests
-
-```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
-## Beispiel
+The CI workflow builds the project with GCC, Clang and MSVC.
+
+## Quick start
 
 ```cpp
 #include <ml/ml.hpp>
 
-int main()
-{
-    ml::Matrix<double> matrix{
-        {1.0, 2.0},
-        {3.0, 4.0}
-    };
+int main() {
+    ml::Matrix features{{0.0}, {1.0}, {2.0}, {3.0}};
+    std::vector<double> targets{1.0, 3.0, 5.0, 7.0};
 
-    return 0;
+    auto model = ml::make_pipeline(ml::LinearRegression{}, ml::StandardScaler{});
+    model.fit(features, targets);
+    const auto prediction = model.predict(ml::Matrix{{4.0}});
 }
 ```
 
-## Algorithmen
+See [examples documentation](docs/examples.md) for data loading, evaluation and clustering examples. The public API and architectural boundaries are described in [docs](docs/).
 
-### Lineare Regression
+## Install as a CMake package
 
-Implementierung einer einfachen linearen Regression für numerische Daten.
+```bash
+cmake -S . -B build
+cmake --install build --prefix /desired/prefix
+```
 
-### K-Means
+Consumers can then use `find_package(CppMLLibrary CONFIG REQUIRED)` and link `CppMLLibrary::ml_library`.
 
-Clustering-Algorithmus zur Gruppierung numerischer Daten in mehrere Cluster.
+## Benchmarks
 
-## Autor
+Benchmarks are opt-in so ordinary builds remain fast:
 
-**bagdanchik007** — C++ / Machine Learning
+```bash
+cmake -S . -B build -DML_BUILD_BENCHMARKS=ON
+cmake --build build --target matrix_benchmark algorithm_benchmark
+```
 
-[GitHub](https://github.com/bagdanchik007)
+## Versioning
 
-## Lizenz
+The project follows semantic versioning. The current public API target is **v1.0.0**; see [CHANGELOG.md](CHANGELOG.md) for release notes.
 
-Dieses Projekt steht unter der in der Datei [LICENSE](LICENSE) angegebenen Lizenz.
+## License
+
+No license has been selected yet. Choose and add a `LICENSE` file before publishing or accepting external contributions.

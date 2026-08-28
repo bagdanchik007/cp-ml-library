@@ -85,6 +85,14 @@ function(add_ml_test TARGET_NAME SOURCE_FILE)
             ml_library
     )
 
+    # Keep assert-based checks active in Release test builds
+    target_compile_options(
+        ${TARGET_NAME}
+        PRIVATE
+            $<$<CXX_COMPILER_ID:MSVC>:/UNDEBUG>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-UNDEBUG>
+    )
+
     add_test(
         NAME ${TARGET_NAME}
         COMMAND ${TARGET_NAME}

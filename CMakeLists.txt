@@ -22,10 +22,8 @@ option(ML_BUILD_BENCHMARKS "Build local benchmark executables" OFF)
 
 add_library(
     ml_library
-
     src/algorithms/linear_regression.cpp
     src/algorithms/kmeans.cpp
-
     src/feature_selection/f_regression.cpp
     src/feature_selection/select_percentile.cpp
     src/feature_selection/select_fpr.cpp
@@ -172,6 +170,15 @@ add_ml_test(
 add_ml_test(
     matrix_solve_tests
     tests/core/matrix/matrix_solve_tests.cpp
+)
+
+# -------------------------------------------------
+# Estimator tests
+# -------------------------------------------------
+
+add_ml_test(
+    classifier_tests
+    tests/core/estimators/classifier_tests.cpp
 )
 
 # -------------------------------------------------
@@ -379,6 +386,9 @@ set(
     # Demo
     ml_demo
 
+    # Estimator tests
+    classifier_tests
+
     # Matrix tests
     matrix_tests
     matrix_arithmetic_tests
@@ -455,9 +465,7 @@ include(CMakePackageConfigHelpers)
 
 install(
     TARGETS ml_library
-
     EXPORT CppMLLibraryTargets
-
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -495,10 +503,39 @@ install(
 )
 
 if(ML_BUILD_BENCHMARKS)
-    add_executable(matrix_benchmark benchmarks/matrix_benchmark.cpp)
-    add_executable(algorithm_benchmark benchmarks/algorithm_benchmark.cpp)
-    target_link_libraries(matrix_benchmark PRIVATE ml_library)
-    target_link_libraries(algorithm_benchmark PRIVATE ml_library)
-    target_compile_options(matrix_benchmark PRIVATE ${ML_WARNING_FLAGS})
-    target_compile_options(algorithm_benchmark PRIVATE ${ML_WARNING_FLAGS})
+
+    add_executable(
+        matrix_benchmark
+        benchmarks/matrix_benchmark.cpp
+    )
+
+    add_executable(
+        algorithm_benchmark
+        benchmarks/algorithm_benchmark.cpp
+    )
+
+    target_link_libraries(
+        matrix_benchmark
+        PRIVATE
+            ml_library
+    )
+
+    target_link_libraries(
+        algorithm_benchmark
+        PRIVATE
+            ml_library
+    )
+
+    target_compile_options(
+        matrix_benchmark
+        PRIVATE
+            ${ML_WARNING_FLAGS}
+    )
+
+    target_compile_options(
+        algorithm_benchmark
+        PRIVATE
+            ${ML_WARNING_FLAGS}
+    )
+
 endif()

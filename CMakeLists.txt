@@ -177,15 +177,19 @@ add_ml_test(
 # -------------------------------------------------
 
 add_ml_test(
+    estimator_tests
+    tests/core/estimators/estimator_tests.cpp
+)
+
+add_ml_test(
     classifier_tests
     tests/core/estimators/classifier_tests.cpp
 )
 
 add_ml_test(
-    estimator_tests
-    tests/core/estimators/estimator_tests.cpp
+    regressor_tests
+    tests/core/estimators/regressor_tests.cpp
 )
-
 # -------------------------------------------------
 # Algorithms tests
 # -------------------------------------------------

@@ -7,6 +7,7 @@
 
 #include "core/matrix/matrix.hpp"
 #include "core/matrix/matrix_utility.hpp"
+#include "core/estimators/estimator.hpp"
 #include "version.hpp"
 
 #include "algorithms/linear_regression.hpp"

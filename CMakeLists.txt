@@ -181,6 +181,11 @@ add_ml_test(
     tests/core/estimators/classifier_tests.cpp
 )
 
+add_ml_test(
+    estimator_tests
+    tests/core/estimators/estimator_tests.cpp
+)
+
 # -------------------------------------------------
 # Algorithms tests
 # -------------------------------------------------

@@ -44,16 +44,13 @@ void LinearRegression::fit(
 
     for (int epoch = 0; epoch < epochs; ++epoch) {
         // Forward pass.
-        // Do not call predict() here because the model
-        // is not considered fitted until training finishes.
         std::vector<double> predictions(n, 0.0);
 
         for (size_t i = 0; i < n; ++i) {
             double prediction = bias_;
 
             for (size_t j = 0; j < m; ++j) {
-                prediction +=
-                    X(i, j) * weights_[j];
+                prediction += X(i, j) * weights_[j];
             }
 
             predictions[i] = prediction;
@@ -64,8 +61,7 @@ void LinearRegression::fit(
         double db = 0.0;
 
         for (size_t i = 0; i < n; ++i) {
-            const double error =
-                predictions[i] - y[i];
+            const double error = predictions[i] - y[i];
 
             for (size_t j = 0; j < m; ++j) {
                 dw[j] += error * X(i, j);
@@ -100,7 +96,32 @@ void LinearRegression::fit(
     fitted_ = true;
 }
 
-std::vector<double> LinearRegression::predict(
+void LinearRegression::fit(
+    const Matrix& X,
+    const Matrix& y
+) {
+    if (y.cols != 1) {
+        throw std::invalid_argument(
+            "LinearRegression expects a single target column"
+        );
+    }
+
+    if (y.rows != X.rows) {
+        throw std::invalid_argument(
+            "Number of samples in X and y must match"
+        );
+    }
+
+    std::vector<double> target(y.rows);
+
+    for (size_t i = 0; i < y.rows; ++i) {
+        target[i] = y(i, 0);
+    }
+
+    fit(X, target);
+}
+
+std::vector<double> LinearRegression::predict_vector(
     const Matrix& X
 ) const {
     if (!fitted_) {
@@ -132,6 +153,20 @@ std::vector<double> LinearRegression::predict(
     return predictions;
 }
 
+Matrix LinearRegression::predict(
+    const Matrix& X
+) const {
+    const auto predictions = predict_vector(X);
+
+    Matrix result(predictions.size(), 1);
+
+    for (size_t i = 0; i < predictions.size(); ++i) {
+        result(i, 0) = predictions[i];
+    }
+
+    return result;
+}
+
 double LinearRegression::score(
     const Matrix& X,
     const std::vector<double>& y
@@ -154,7 +189,7 @@ double LinearRegression::score(
         );
     }
 
-    const auto predictions = predict(X);
+    const auto predictions = predict_vector(X);
 
     return compute_mse(predictions, y);
 }

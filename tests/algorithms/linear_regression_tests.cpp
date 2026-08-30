@@ -1,4 +1,5 @@
 #include "ml/ml.hpp"
+#include "ml/core/estimators/regressor.hpp"
 
 #include <cassert>
 #include <cmath>
@@ -81,7 +82,7 @@ void test_linear_regression_prediction() {
     };
 
     const auto predictions =
-        lr.predict(prediction_input);
+        lr.predict_vector(prediction_input);
 
     assert(predictions.size() == 2);
 
@@ -110,7 +111,7 @@ void test_linear_regression_unfitted_prediction() {
 
     try {
         [[maybe_unused]] const auto predictions =
-            lr.predict(X);
+            lr.predict_vector(X);
     } catch (const std::runtime_error&) {
         thrown = true;
     }
@@ -148,7 +149,7 @@ void test_linear_regression_dimension_validation() {
 
     try {
         [[maybe_unused]] const auto predictions =
-            lr.predict(invalid_X);
+            lr.predict_vector(invalid_X);
     } catch (const std::invalid_argument&) {
         prediction_thrown = true;
     }
@@ -267,7 +268,6 @@ void test_linear_regression_empty_data() {
     LinearRegression lr;
 
     Matrix empty_matrix;
-
     std::vector<double> empty_y;
 
     bool thrown = false;
@@ -283,6 +283,54 @@ void test_linear_regression_empty_data() {
     std::cout << "OK\n";
 }
 
+void test_linear_regression_as_regressor() {
+    std::cout << "[TEST] LinearRegression as Regressor ... ";
+
+    Matrix X = {
+        {1.0},
+        {2.0},
+        {3.0},
+        {4.0}
+    };
+
+    Matrix y = {
+        {2.0},
+        {4.0},
+        {6.0},
+        {8.0}
+    };
+
+    LinearRegression model;
+
+    Regressor* regressor = &model;
+
+    regressor->fit(X, y);
+
+    const Matrix predictions =
+        regressor->predict(X);
+
+    assert(predictions.rows == 4);
+    assert(predictions.cols == 1);
+
+    assert(
+        std::abs(predictions(0, 0) - 2.0) < 0.2
+    );
+
+    assert(
+        std::abs(predictions(1, 0) - 4.0) < 0.2
+    );
+
+    assert(
+        std::abs(predictions(2, 0) - 6.0) < 0.2
+    );
+
+    assert(
+        std::abs(predictions(3, 0) - 8.0) < 0.2
+    );
+
+    std::cout << "OK\n";
+}
+
 int main() {
     std::cout << "Running linear regression tests...\n\n";
 
@@ -293,6 +341,7 @@ int main() {
     test_linear_regression_training_validation();
     test_linear_regression_sample_validation();
     test_linear_regression_empty_data();
+    test_linear_regression_as_regressor();
 
     std::cout
         << "\nAll linear regression tests passed!\n";

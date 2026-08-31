@@ -39,7 +39,7 @@ void run_linear_regression_demo() {
         {7.0, 5.0}
     };
 
-    const auto predictions = model.predict(X_test);
+    const auto predictions = model.predict_vector(X_test);
 
     std::cout << "Predictions for test set: ";
 

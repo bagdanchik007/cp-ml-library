@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(
     CppMLLibrary
-    VERSION 1.0.0
+    VERSION 1.1.0
     LANGUAGES CXX
 )
 
@@ -52,6 +52,7 @@ add_executable(
     examples/kmeans_demo.cpp
     examples/preprocessing/preprocessing_demo.cpp
     examples/feature_selection/feature_selection_demo.cpp
+    examples/new_algorithms_demo.cpp
 )
 
 target_link_libraries(
@@ -214,6 +215,26 @@ add_ml_test(
     tests/algorithms/dbscan_tests.cpp
 )
 
+add_ml_test(
+    knn_classifier_tests
+    tests/algorithms/knn_classifier_tests.cpp
+)
+
+add_ml_test(
+    gaussian_naive_bayes_tests
+    tests/algorithms/gaussian_naive_bayes_tests.cpp
+)
+
+add_ml_test(
+    logistic_regression_tests
+    tests/algorithms/logistic_regression_tests.cpp
+)
+
+add_ml_test(
+    ridge_regression_tests
+    tests/algorithms/ridge_regression_tests.cpp
+)
+
 # -------------------------------------------------
 # Preprocessing tests
 # -------------------------------------------------
@@ -246,6 +267,16 @@ add_ml_test(
 add_ml_test(
     train_test_split_tests
     tests/preprocessing/train_test_split_tests.cpp
+)
+
+add_ml_test(
+    k_bins_discretizer_tests
+    tests/preprocessing/k_bins_discretizer_tests.cpp
+)
+
+add_ml_test(
+    log1p_transformer_tests
+    tests/preprocessing/log1p_transformer_tests.cpp
 )
 
 add_ml_test(
@@ -346,8 +377,23 @@ add_ml_test(
 )
 
 add_ml_test(
+    classification_metrics_tests
+    tests/metrics/classification_metrics_tests.cpp
+)
+
+add_ml_test(
+    silhouette_score_tests
+    tests/metrics/silhouette_score_tests.cpp
+)
+
+add_ml_test(
     model_selection_tests
     tests/model_selection/model_selection_tests.cpp
+)
+
+add_ml_test(
+    stratified_kfold_tests
+    tests/model_selection/stratified_kfold_tests.cpp
 )
 
 add_ml_test(

@@ -6,6 +6,7 @@ void run_linear_regression_demo();
 void run_kmeans_demo();
 void run_preprocessing_demo();
 void run_feature_selection_demo();
+void run_new_algorithms_demo();
 
 }
 
@@ -25,6 +26,10 @@ int main()
     std::cout << "\n--- Feature Selection ---\n\n";
 
     ml::examples::run_feature_selection_demo();
+
+    std::cout << "\n--- New Algorithms (KNN, Naive Bayes, Logistic & Ridge Regression) ---\n\n";
+
+    ml::examples::run_new_algorithms_demo();
 
     std::cout << "\nDemo finished successfully.\n";
 

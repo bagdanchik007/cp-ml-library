@@ -19,6 +19,10 @@
 #include "algorithms/decision_tree.hpp"
 #include "algorithms/random_forest.hpp"
 #include "algorithms/dbscan.hpp"
+#include "algorithms/knn_classifier.hpp"
+#include "algorithms/gaussian_naive_bayes.hpp"
+#include "algorithms/logistic_regression.hpp"
+#include "algorithms/ridge_regression.hpp"
 
 #include "data/dataset.hpp"
 #include "data/csv_reader.hpp"
@@ -26,6 +30,7 @@
 #include "metrics/model_evaluation.hpp"
 
 #include "model_selection/kfold.hpp"
+#include "model_selection/stratified_kfold.hpp"
 #include "model_selection/cross_validation.hpp"
 #include "model_selection/grid_search.hpp"
 
@@ -38,3 +43,5 @@
 #include "preprocessing/one_hot_encoder.hpp"
 #include "preprocessing/simple_imputer.hpp"
 #include "preprocessing/train_test_split.hpp"
+#include "preprocessing/k_bins_discretizer.hpp"
+#include "preprocessing/log1p_transformer.hpp"

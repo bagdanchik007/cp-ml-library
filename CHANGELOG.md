@@ -2,6 +2,22 @@
 
 All notable changes are documented here. This project follows semantic versioning.
 
+## [1.1.0] - Unreleased
+
+### Added
+
+- Classification metrics: `precision_score`, `recall_score`, `f1_score`, `confusion_matrix`
+- Regression metric: `root_mean_squared_error`
+- Clustering metric: `silhouette_score`
+- `KNNClassifier`: brute-force k-nearest-neighbors classifier
+- `GaussianNaiveBayes`: Gaussian Naive Bayes classifier
+- `LogisticRegression`: binary logistic regression via batch gradient descent
+- `RidgeRegression`: closed-form L2-regularized linear regression
+- `KBinsDiscretizer`: equal-width binning preprocessing transformer
+- `Log1pTransformer`: log(1 + x) preprocessing transformer with inverse
+- `StratifiedKFold`: class-proportion-preserving cross-validation splitter
+- Demo showcasing the new algorithms in `examples/new_algorithms_demo.cpp`
+
 ## [1.0.0] - Unreleased
 
 ### Added

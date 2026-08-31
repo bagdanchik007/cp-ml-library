@@ -1,5 +1,11 @@
 # Cpp ML Library
 
+[![CI](https://github.com/bagdanchik007/cp-ml-library/actions/workflows/ci.yml/badge.svg)](https://github.com/bagdanchik007/cp-ml-library/actions/workflows/ci.yml)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue?style=flat-square\&logo=c%2B%2B)](https://en.cppreference.com/w/cpp/17)
+[![CMake](https://img.shields.io/badge/CMake-Build%20System-blue?style=flat-square\&logo=cmake)](https://cmake.org/)
+[![Tests](https://img.shields.io/badge/Tests-100%20passed-success?style=flat-square)](https://github.com/bagdanchik007/cp-ml-library)
+[![Version](https://img.shields.io/badge/Version-v1.1.0-orange?style=flat-square)](https://github.com/bagdanchik007/cp-ml-library/releases)
+
 Eine kleine, dependency-freie Machine-Learning-Bibliothek für C++17.
 
 Das Projekt wurde für Lernen, Experimente und Portfolio-Projekte entwickelt. Alle Algorithmen sind in verständlichem C++ implementiert, und die öffentliche API wird durch automatisierte CTest-Tests überprüft.

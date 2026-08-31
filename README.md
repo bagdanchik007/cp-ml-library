@@ -5,12 +5,12 @@ A small, dependency-free C++17 machine-learning library. It is designed for lear
 ## What is included
 
 - Dense `Matrix` type with arithmetic, decompositions, statistics and linear algebra
-- Regression and clustering: linear regression, K-Means and DBSCAN
-- Classification: decision tree and random forest
-- Preprocessing: imputing, scaling, encoding, polynomial features and train/test splitting
+- Regression and clustering: linear regression, ridge regression, K-Means and DBSCAN
+- Classification: decision tree, random forest, K-nearest-neighbors, Gaussian Naive Bayes and logistic regression
+- Preprocessing: imputing, scaling, encoding, discretization, log transforms, polynomial features and train/test splitting
 - Feature selection: variance threshold, univariate tests and model-based selectors
-- Data tooling: numeric CSV reader, `Dataset`, K-fold cross-validation and grid search
-- Evaluation: MSE, MAE, R² and classification accuracy
+- Data tooling: numeric CSV reader, `Dataset`, K-fold/stratified K-fold cross-validation and grid search
+- Evaluation: MSE, RMSE, MAE, R², classification accuracy/precision/recall/F1, confusion matrix and silhouette score
 - A composable supervised `Pipeline` for existing transformers and regressors
 
 ## Build and test
@@ -60,7 +60,7 @@ cmake --build build --target matrix_benchmark algorithm_benchmark
 
 ## Versioning
 
-The project follows semantic versioning. The current public API target is **v1.0.0**; see [CHANGELOG.md](CHANGELOG.md) for release notes.
+The project follows semantic versioning. The current public API target is **v1.1.0**; see [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ## License
 

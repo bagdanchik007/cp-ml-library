@@ -2,42 +2,128 @@
 
 #include "ml/core/matrix/matrix.hpp"
 
+#include <stdexcept>
 #include <tuple>
 #include <utility>
-#include <vector>
 
 namespace ml {
 
-/** Type-safe supervised pipeline for transformers exposing fit_transform/transform and an estimator exposing fit/predict. */
 template <typename Estimator, typename... Transformers>
 class Pipeline {
 public:
-    Pipeline(Estimator estimator, Transformers... transformers)
-        : estimator_(std::move(estimator)), transformers_(std::move(transformers)...) {}
+    Pipeline(
+        Estimator estimator,
+        Transformers... transformers
+    )
+        : estimator_(std::move(estimator)),
+          transformers_(std::move(transformers)...) {}
 
-    void fit(const Matrix& features, const std::vector<double>& targets) {
-        estimator_.fit(fit_transform(features), targets);
+    template <typename Targets>
+    void fit(
+        const Matrix& features,
+        const Targets& targets
+    ) {
+        Matrix transformed = features;
+
+        apply_fit_transform(transformed);
+
+        estimator_.fit(
+            transformed,
+            targets
+        );
+
         fitted_ = true;
     }
-    std::vector<double> predict(const Matrix& features) const { return estimator_.predict(transform(features)); }
-    Estimator& estimator() noexcept { return estimator_; }
-    const Estimator& estimator() const noexcept { return estimator_; }
-    bool is_fitted() const noexcept { return fitted_; }
+
+    Matrix predict(
+        const Matrix& features
+    ) const {
+        if (!fitted_) {
+            throw std::logic_error(
+                "Pipeline::predict: "
+                "pipeline has not been fitted"
+            );
+        }
+
+        return estimator_.predict(
+            transform(features)
+        );
+    }
+
+    bool is_fitted() const noexcept {
+        return fitted_;
+    }
+
 private:
-    template <size_t Index = 0> Matrix fit_transform(Matrix data) {
-        if constexpr (Index < sizeof...(Transformers)) return fit_transform<Index + 1>(std::get<Index>(transformers_).fit_transform(data));
-        else return data;
+    Matrix transform(
+        Matrix features
+    ) const {
+        apply_transform(features);
+
+        return features;
     }
-    template <size_t Index = 0> Matrix transform(Matrix data) const {
-        if constexpr (Index < sizeof...(Transformers)) return transform<Index + 1>(std::get<Index>(transformers_).transform(data));
-        else return data;
+
+    template <std::size_t Index = 0>
+    void apply_fit_transform(
+        Matrix& features
+    ) {
+        if constexpr (
+            Index < sizeof...(Transformers)
+        ) {
+            auto& transformer =
+                std::get<Index>(transformers_);
+
+            transformer.fit(features);
+
+            features =
+                transformer.transform(features);
+
+            apply_fit_transform<
+                Index + 1
+            >(features);
+        }
     }
-    Estimator estimator_; std::tuple<Transformers...> transformers_; bool fitted_ = false;
+
+    template <std::size_t Index = 0>
+    void apply_transform(
+        Matrix& features
+    ) const {
+        if constexpr (
+            Index < sizeof...(Transformers)
+        ) {
+            const auto& transformer =
+                std::get<Index>(transformers_);
+
+            features =
+                transformer.transform(features);
+
+            apply_transform<
+                Index + 1
+            >(features);
+        }
+    }
+
+private:
+    Estimator estimator_;
+
+    std::tuple<Transformers...>
+        transformers_;
+
+    bool fitted_ = false;
 };
 
 template <typename Estimator, typename... Transformers>
-Pipeline<Estimator, Transformers...> make_pipeline(Estimator estimator, Transformers... transformers) {
-    return Pipeline<Estimator, Transformers...>(std::move(estimator), std::move(transformers)...);
+auto make_pipeline(
+    Estimator estimator,
+    Transformers... transformers
+) {
+    return Pipeline<
+        Estimator,
+        Transformers...
+    >(
+        std::move(estimator),
+        std::move(transformers)...
+    );
 }
 
 } // namespace ml

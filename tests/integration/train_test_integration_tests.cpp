@@ -47,15 +47,49 @@ void test_train_test_split_with_model_evaluation() {
         5000
     );
 
-    const std::vector<double> predictions =
-        model.predict(split.test.features());
+const Matrix prediction_matrix =
+    model.predict(split.test.features());
 
-    assert(predictions.size() == split.test.targets().size());
-    assert(mean_squared_error(split.test.targets(), predictions) < 0.15);
-    assert(mean_absolute_error(split.test.targets(), predictions) < 0.35);
-    assert(r2_score(split.test.targets(), predictions) > 0.95);
+std::vector<double> predictions;
 
-    std::cout << "OK\n";
+predictions.reserve(
+    prediction_matrix.rows
+);
+
+for (size_t i = 0;
+     i < prediction_matrix.rows;
+     ++i) {
+
+    predictions.push_back(
+        prediction_matrix(i, 0)
+    );
+}
+
+assert(
+    predictions.size() ==
+    split.test.targets().size()
+);
+
+assert(
+    mean_squared_error(
+        split.test.targets(),
+        predictions
+    ) < 0.15
+);
+
+assert(
+    mean_absolute_error(
+        split.test.targets(),
+        predictions
+    ) < 0.35
+);
+
+assert(
+    r2_score(
+        split.test.targets(),
+        predictions
+    ) > 0.95
+);
 }
 
 int main() {

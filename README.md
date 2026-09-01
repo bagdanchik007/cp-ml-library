@@ -91,6 +91,25 @@ Das Projekt wurde für Lernen, Experimente und Portfolio-Projekte entwickelt. Al
 * Composable `Pipeline` für Transformer und Modelle
 
 ---
+## Projektstruktur
+
+```text
+cp-ml-library/
+├── include/
+│   └── ml/                  # Öffentliche Header und API
+├── src/                     # Implementierungen
+├── tests/                   # Unit- und Integrationstests
+├── examples/                # Beispielprogramme
+├── benchmarks/              # Performance-Benchmarks
+├── docs/                    # Dokumentation
+├── .github/
+│   └── workflows/           # GitHub Actions CI
+├── CMakeLists.txt           # CMake Build-Konfiguration
+├── README.md                # Projektübersicht
+├── CONTRIBUTING.md          # Beitragsrichtlinien
+├── ROADMAP.md               # Geplante Entwicklung
+├── CHANGELOG.md             # Versionshistorie
+└── LICENSE                  # MIT License
 
 ## Build und Tests
 

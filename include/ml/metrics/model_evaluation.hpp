@@ -179,4 +179,109 @@ inline double silhouette_score(const Matrix& X, const std::vector<int>& labels) 
     return total / static_cast<double>(X.rows);
 }
 
+/**
+ * @brief Balanced accuracy: average of per-class recall, robust to class imbalance.
+ */
+inline double balanced_accuracy_score(const std::vector<int>& actual, const std::vector<int>& predicted) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("balanced_accuracy_score: inputs must be non-empty and equally sized");
+    }
+
+    std::map<int, size_t> class_total;
+    std::map<int, size_t> class_correct;
+    for (size_t i = 0; i < actual.size(); ++i) {
+        ++class_total[actual[i]];
+        if (actual[i] == predicted[i]) ++class_correct[actual[i]];
+    }
+
+    double sum_recall = 0.0;
+    for (const auto& [label, total] : class_total) {
+        const size_t correct = class_correct.count(label) ? class_correct.at(label) : 0;
+        sum_recall += static_cast<double>(correct) / static_cast<double>(total);
+    }
+    return sum_recall / static_cast<double>(class_total.size());
+}
+
+/**
+ * @brief Matthews correlation coefficient for binary classification.
+ *
+ * Ranges from -1 (total disagreement) to +1 (perfect prediction), with
+ * 0 representing no better than random guessing. Robust to class imbalance.
+ */
+inline double matthews_corrcoef(const std::vector<int>& actual, const std::vector<int>& predicted, int positive_label = 1) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("matthews_corrcoef: inputs must be non-empty and equally sized");
+    }
+
+    double true_positive = 0.0, true_negative = 0.0, false_positive = 0.0, false_negative = 0.0;
+    for (size_t i = 0; i < actual.size(); ++i) {
+        const bool actual_positive = actual[i] == positive_label;
+        const bool predicted_positive = predicted[i] == positive_label;
+        if (actual_positive && predicted_positive) ++true_positive;
+        else if (!actual_positive && !predicted_positive) ++true_negative;
+        else if (!actual_positive && predicted_positive) ++false_positive;
+        else ++false_negative;
+    }
+
+    const double numerator = true_positive * true_negative - false_positive * false_negative;
+    const double denominator = std::sqrt(
+        (true_positive + false_positive) *
+        (true_positive + false_negative) *
+        (true_negative + false_positive) *
+        (true_negative + false_negative)
+    );
+    return denominator == 0.0 ? 0.0 : numerator / denominator;
+}
+
+/**
+ * @brief Mean Absolute Percentage Error, expressed as a fraction (not a percentage).
+ *
+ * Skips samples where the actual value is zero, since the percentage
+ * error is undefined there.
+ */
+inline double mean_absolute_percentage_error(const std::vector<double>& actual, const std::vector<double>& predicted) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("mean_absolute_percentage_error: inputs must be non-empty and equally sized");
+    }
+
+    double sum = 0.0;
+    size_t count = 0;
+    for (size_t i = 0; i < actual.size(); ++i) {
+        if (actual[i] == 0.0) continue;
+        sum += std::abs((actual[i] - predicted[i]) / actual[i]);
+        ++count;
+    }
+    if (count == 0) throw std::invalid_argument("mean_absolute_percentage_error: all actual values are zero");
+    return sum / static_cast<double>(count);
+}
+
+/**
+ * @brief Explained variance score: fraction of target variance captured by predictions.
+ *
+ * Similar to r2_score, but does not penalize a constant systematic bias
+ * in the predictions (only unexplained variance counts against it).
+ */
+inline double explained_variance_score(const std::vector<double>& actual, const std::vector<double>& predicted) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("explained_variance_score: inputs must be non-empty and equally sized");
+    }
+
+    std::vector<double> residual(actual.size());
+    for (size_t i = 0; i < actual.size(); ++i) residual[i] = actual[i] - predicted[i];
+
+    auto variance = [](const std::vector<double>& values) {
+        double mean = 0.0;
+        for (double value : values) mean += value;
+        mean /= static_cast<double>(values.size());
+
+        double sum_sq = 0.0;
+        for (double value : values) sum_sq += (value - mean) * (value - mean);
+        return sum_sq / static_cast<double>(values.size());
+    };
+
+    const double residual_variance = variance(residual);
+    const double actual_variance = variance(actual);
+    return actual_variance == 0.0 ? 0.0 : 1.0 - residual_variance / actual_variance;
+}
+
 } // namespace ml

@@ -12,9 +12,5 @@ int main() {
     pipeline.fit(x, y);
     const auto prediction = pipeline.predict(ml::Matrix{{4.0}});
     assert(pipeline.is_fitted());
-    assert(
-    prediction.rows == 1 &&
-    prediction.cols == 1 &&
-    std::abs(prediction(0, 0) - 9.0) < 0.5
-);
+    assert(prediction.size() == 1 && std::abs(prediction[0] - 9.0) < 0.5);
 }

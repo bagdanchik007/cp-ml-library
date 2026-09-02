@@ -1,119 +1,19 @@
 # Cpp ML Library
 
-[![CI](https://github.com/bagdanchik007/cp-ml-library/actions/workflows/ci.yml/badge.svg)](https://github.com/bagdanchik007/cp-ml-library/actions/workflows/ci.yml)
-[![C++17](https://img.shields.io/badge/C%2B%2B-17-blue?style=flat-square\&logo=c%2B%2B)](https://en.cppreference.com/w/cpp/17)
-[![CMake](https://img.shields.io/badge/CMake-Build%20System-blue?style=flat-square\&logo=cmake)](https://cmake.org/)
-[![Tests](https://img.shields.io/badge/Tests-100%20passed-success?style=flat-square)](https://github.com/bagdanchik007/cp-ml-library)
-[![Version](https://img.shields.io/badge/Version-v1.1.0-orange?style=flat-square)](https://github.com/bagdanchik007/cp-ml-library/releases)
+A small, dependency-free C++17 machine-learning library. It is designed for learning, experiments and portfolio projects: every algorithm is implemented in readable C++ and the public API is covered by CTest tests.
 
-Eine kleine, dependency-freie Machine-Learning-Bibliothek für C++17.
+## What is included
 
-Das Projekt wurde für Lernen, Experimente und Portfolio-Projekte entwickelt. Alle Algorithmen sind in verständlichem C++ implementiert, und die öffentliche API wird durch automatisierte CTest-Tests überprüft.
+- Dense `Matrix` type with arithmetic, decompositions, statistics and linear algebra
+- Regression and clustering: linear regression, ridge regression, K-Means and DBSCAN
+- Classification: decision tree, random forest, K-nearest-neighbors, Gaussian Naive Bayes and logistic regression
+- Preprocessing: imputing, scaling, encoding, discretization, log transforms, polynomial features and train/test splitting
+- Feature selection: variance threshold, univariate tests and model-based selectors
+- Data tooling: numeric CSV reader, `Dataset`, K-fold/stratified K-fold cross-validation and grid search
+- Evaluation: MSE, RMSE, MAE, R², classification accuracy/precision/recall/F1, confusion matrix and silhouette score
+- A composable supervised `Pipeline` for existing transformers and regressors
 
-## Funktionen
-
-### Matrix und mathematische Grundlagen
-
-* Dichte `Matrix`-Klasse
-* Matrix-Arithmetik
-* Lineare Algebra
-* Matrix-Zerlegungen
-* Statistische Funktionen
-* Normen und weitere Matrix-Operationen
-
-### Machine Learning
-
-#### Regression und Clustering
-
-* Lineare Regression
-* Ridge Regression
-* K-Means
-* DBSCAN
-
-#### Klassifikation
-
-* Decision Tree
-* Random Forest
-* K-Nearest Neighbors
-* Gaussian Naive Bayes
-* Logistic Regression
-
-### Datenvorverarbeitung
-
-* Missing-Value-Imputation
-* Standardisierung
-* Normalisierung
-* Min-Max Scaling
-* Robust Scaling
-* Max-Abs Scaling
-* One-Hot-Encoding
-* Label-Encoding
-* Binning und Diskretisierung
-* Logarithmische Transformationen
-* Polynomial Features
-* Train/Test-Splitting
-
-### Feature Selection
-
-* Variance Threshold
-* Univariate Feature Selection
-* `SelectKBest`
-* `SelectPercentile`
-* `SelectFPR`
-* `SelectFDR`
-* Mutual Information
-* Chi-Square Tests
-
-### Model Selection
-
-* K-Fold Cross-Validation
-* Stratified K-Fold
-* Cross-Validation
-* Grid Search
-
-### Evaluation
-
-* Mean Squared Error (MSE)
-* Root Mean Squared Error (RMSE)
-* Mean Absolute Error (MAE)
-* R² Score
-* Accuracy
-* Precision
-* Recall
-* F1 Score
-* Confusion Matrix
-* Silhouette Score
-
-### Weitere Funktionen
-
-* Numerischer CSV-Reader
-* `Dataset`-Klasse
-* Composable `Pipeline` für Transformer und Modelle
-
----
-## Projektstruktur
-
-```text
-cp-ml-library/
-├── include/
-│   └── ml/                  # Öffentliche Header und API
-├── src/                     # Implementierungen
-├── tests/                   # Unit- und Integrationstests
-├── examples/                # Beispielprogramme
-├── benchmarks/              # Performance-Benchmarks
-├── docs/                    # Dokumentation
-├── .github/
-│   └── workflows/           # GitHub Actions CI
-├── CMakeLists.txt           # CMake Build-Konfiguration
-├── README.md                # Projektübersicht
-├── CONTRIBUTING.md          # Beitragsrichtlinien
-├── ROADMAP.md               # Geplante Entwicklung
-├── CHANGELOG.md             # Versionshistorie
-└── LICENSE                  # MIT License
-
-## Build und Tests
-
-Das Projekt verwendet **CMake**.
+## Build and test
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -121,109 +21,47 @@ cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
-Die Tests werden automatisch mit **CTest** ausgeführt.
+The CI workflow builds the project with GCC, Clang and MSVC.
 
-Die CI-Pipeline baut und testet das Projekt mit:
-
-* GCC
-* Clang
-* MSVC
-
----
-
-## Quick Start
+## Quick start
 
 ```cpp
 #include <ml/ml.hpp>
 
 int main() {
-    ml::Matrix features{
-        {0.0},
-        {1.0},
-        {2.0},
-        {3.0}
-    };
+    ml::Matrix features{{0.0}, {1.0}, {2.0}, {3.0}};
+    std::vector<double> targets{1.0, 3.0, 5.0, 7.0};
 
-    std::vector<double> targets{
-        1.0,
-        3.0,
-        5.0,
-        7.0
-    };
-
-    auto model = ml::make_pipeline(
-        ml::LinearRegression{},
-        ml::StandardScaler{}
-    );
-
+    auto model = ml::make_pipeline(ml::LinearRegression{}, ml::StandardScaler{});
     model.fit(features, targets);
-
-    const auto prediction =
-        model.predict(
-            ml::Matrix{{4.0}}
-        );
+    const auto prediction = model.predict(ml::Matrix{{4.0}});
 }
 ```
 
-Weitere Beispiele findest du in der [Beispieldokumentation](docs/examples.md).
+See [examples documentation](docs/examples.md) for data loading, evaluation and clustering examples. The public API and architectural boundaries are described in [docs](docs/).
 
-Die öffentliche API und die Architektur des Projekts werden im Verzeichnis [`docs/`](docs/) beschrieben.
-
----
-
-## Integration als CMake-Package
-
-Die Bibliothek kann als CMake-Package installiert werden:
+## Install as a CMake package
 
 ```bash
 cmake -S . -B build
 cmake --install build --prefix /desired/prefix
 ```
 
-Anschließend kann das Projekt in einer anderen CMake-Anwendung verwendet werden:
-
-```cmake
-find_package(CppMLLibrary CONFIG REQUIRED)
-
-target_link_libraries(
-    your_target
-    PRIVATE
-    CppMLLibrary::ml_library
-)
-```
-
----
+Consumers can then use `find_package(CppMLLibrary CONFIG REQUIRED)` and link `CppMLLibrary::ml_library`.
 
 ## Benchmarks
 
-Benchmarks sind optional, damit normale Builds schnell bleiben.
-
-Aktivierung:
+Benchmarks are opt-in so ordinary builds remain fast:
 
 ```bash
 cmake -S . -B build -DML_BUILD_BENCHMARKS=ON
-```
-
-Anschließend können die Benchmarks gebaut werden:
-
-```bash
 cmake --build build --target matrix_benchmark algorithm_benchmark
 ```
 
----
+## Versioning
 
-## Versionierung
+The project follows semantic versioning. The current public API target is **v1.2.0**; see [CHANGELOG.md](CHANGELOG.md) for release notes.
 
-Das Projekt orientiert sich an [Semantic Versioning](https://semver.org/).
+## License
 
-Das aktuelle Ziel für die öffentliche API ist **v1.1.0**.
-
-Weitere Informationen zu Änderungen und Releases findest du in der [CHANGELOG.md](CHANGELOG.md).
-
----
-
-## Lizenz
-
-Aktuell wurde noch keine Lizenz ausgewählt.
-
-Vor einer öffentlichen Veröffentlichung oder dem Akzeptieren externer Contributions sollte eine passende `LICENSE`-Datei hinzugefügt werden.
+No license has been selected yet. Choose and add a `LICENSE` file before publishing or accepting external contributions.

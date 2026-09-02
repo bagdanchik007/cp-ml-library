@@ -2,6 +2,20 @@
 
 All notable changes are documented here. This project follows semantic versioning.
 
+## [1.2.0] - Unreleased
+
+### Added
+
+- `Perceptron`: classic single-layer binary classifier
+- `SoftmaxRegression`: multiclass logistic regression
+- `LassoRegression`: L1-regularized linear regression via coordinate descent
+- `KNNRegressor`: k-nearest-neighbors regression
+- `DummyClassifier` / `DummyRegressor`: baseline models for sanity-checking real models
+- `OrdinalEncoder`: integer encoding for multi-column categorical string data
+- Metrics: `balanced_accuracy_score`, `matthews_corrcoef`, `mean_absolute_percentage_error`, `explained_variance_score`
+- `LeaveOneOut`: cross-validation splitter for small datasets
+- Demo showcasing the new algorithms in `examples/more_algorithms_demo.cpp`
+
 ## [1.1.0] - Unreleased
 
 ### Added

@@ -23,6 +23,12 @@
 #include "algorithms/gaussian_naive_bayes.hpp"
 #include "algorithms/logistic_regression.hpp"
 #include "algorithms/ridge_regression.hpp"
+#include "algorithms/perceptron.hpp"
+#include "algorithms/softmax_regression.hpp"
+#include "algorithms/lasso_regression.hpp"
+#include "algorithms/knn_regressor.hpp"
+#include "algorithms/dummy_classifier.hpp"
+#include "algorithms/dummy_regressor.hpp"
 
 #include "data/dataset.hpp"
 #include "data/csv_reader.hpp"
@@ -31,6 +37,7 @@
 
 #include "model_selection/kfold.hpp"
 #include "model_selection/stratified_kfold.hpp"
+#include "model_selection/leave_one_out.hpp"
 #include "model_selection/cross_validation.hpp"
 #include "model_selection/grid_search.hpp"
 
@@ -45,3 +52,4 @@
 #include "preprocessing/train_test_split.hpp"
 #include "preprocessing/k_bins_discretizer.hpp"
 #include "preprocessing/log1p_transformer.hpp"
+#include "preprocessing/ordinal_encoder.hpp"

@@ -53,6 +53,7 @@ add_executable(
     examples/preprocessing/preprocessing_demo.cpp
     examples/feature_selection/feature_selection_demo.cpp
     examples/new_algorithms_demo.cpp
+    examples/more_algorithms_demo.cpp
 )
 
 target_link_libraries(
@@ -235,6 +236,36 @@ add_ml_test(
     tests/algorithms/ridge_regression_tests.cpp
 )
 
+add_ml_test(
+    perceptron_tests
+    tests/algorithms/perceptron_tests.cpp
+)
+
+add_ml_test(
+    softmax_regression_tests
+    tests/algorithms/softmax_regression_tests.cpp
+)
+
+add_ml_test(
+    lasso_regression_tests
+    tests/algorithms/lasso_regression_tests.cpp
+)
+
+add_ml_test(
+    knn_regressor_tests
+    tests/algorithms/knn_regressor_tests.cpp
+)
+
+add_ml_test(
+    dummy_classifier_tests
+    tests/algorithms/dummy_classifier_tests.cpp
+)
+
+add_ml_test(
+    dummy_regressor_tests
+    tests/algorithms/dummy_regressor_tests.cpp
+)
+
 # -------------------------------------------------
 # Preprocessing tests
 # -------------------------------------------------
@@ -277,6 +308,11 @@ add_ml_test(
 add_ml_test(
     log1p_transformer_tests
     tests/preprocessing/log1p_transformer_tests.cpp
+)
+
+add_ml_test(
+    ordinal_encoder_tests
+    tests/preprocessing/ordinal_encoder_tests.cpp
 )
 
 add_ml_test(
@@ -387,6 +423,16 @@ add_ml_test(
 )
 
 add_ml_test(
+    imbalanced_metrics_tests
+    tests/metrics/imbalanced_metrics_tests.cpp
+)
+
+add_ml_test(
+    regression_extra_metrics_tests
+    tests/metrics/regression_extra_metrics_tests.cpp
+)
+
+add_ml_test(
     model_selection_tests
     tests/model_selection/model_selection_tests.cpp
 )
@@ -394,6 +440,11 @@ add_ml_test(
 add_ml_test(
     stratified_kfold_tests
     tests/model_selection/stratified_kfold_tests.cpp
+)
+
+add_ml_test(
+    leave_one_out_tests
+    tests/model_selection/leave_one_out_tests.cpp
 )
 
 add_ml_test(

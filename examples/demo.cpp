@@ -8,6 +8,7 @@ void run_preprocessing_demo();
 void run_feature_selection_demo();
 void run_new_algorithms_demo();
 void run_more_algorithms_demo();
+void run_third_round_algorithms_demo();
 
 }
 
@@ -35,6 +36,10 @@ int main()
     std::cout << "\n--- More Algorithms (Perceptron, Softmax, Lasso, KNN Regressor, Dummy Baselines) ---\n\n";
 
     ml::examples::run_more_algorithms_demo();
+
+    std::cout << "\n--- Third Round (Clustering, Elastic Net, Multinomial NB, Weighted KNN, Randomized Search) ---\n\n";
+
+    ml::examples::run_third_round_algorithms_demo();
 
     std::cout << "\nDemo finished successfully.\n";
 

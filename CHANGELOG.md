@@ -2,6 +2,21 @@
 
 All notable changes are documented here. This project follows semantic versioning.
 
+## [1.3.0] - Unreleased
+
+### Added
+
+- `AgglomerativeClustering`: hierarchical clustering (single/complete linkage)
+- `ElasticNet`: combined L1+L2 regularized linear regression
+- `MultinomialNaiveBayes`: Naive Bayes for count-based (e.g. text) features
+- `WeightedKNNClassifier`: distance-weighted k-nearest-neighbors voting
+- `LabelBinarizer`: one-hot encoding for multiclass labels
+- `FunctionTransformer`: generic element-wise transformation wrapper
+- Metrics: `cohen_kappa_score`, `jaccard_score`, `hamming_loss`
+- `RepeatedKFold`, `ShuffleSplit`: additional cross-validation splitters
+- `RandomizedSearch`: randomized hyperparameter search
+- Demo showcasing the third round of new algorithms in `examples/third_round_algorithms_demo.cpp`
+
 ## [1.2.0] - Unreleased
 
 ### Added

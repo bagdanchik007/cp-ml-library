@@ -284,4 +284,70 @@ inline double explained_variance_score(const std::vector<double>& actual, const 
     return actual_variance == 0.0 ? 0.0 : 1.0 - residual_variance / actual_variance;
 }
 
+/**
+ * @brief Cohen's Kappa: agreement between actual and predicted labels,
+ * corrected for the agreement expected purely by chance.
+ *
+ * 1.0 is perfect agreement, 0.0 is what chance alone would produce,
+ * negative values indicate worse-than-chance agreement.
+ */
+inline double cohen_kappa_score(const std::vector<int>& actual, const std::vector<int>& predicted) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("cohen_kappa_score: inputs must be non-empty and equally sized");
+    }
+
+    std::map<int, double> actual_counts, predicted_counts;
+    double agreement = 0.0;
+    for (size_t i = 0; i < actual.size(); ++i) {
+        ++actual_counts[actual[i]];
+        ++predicted_counts[predicted[i]];
+        if (actual[i] == predicted[i]) agreement += 1.0;
+    }
+
+    const auto n = static_cast<double>(actual.size());
+    const double observed_agreement = agreement / n;
+
+    double expected_agreement = 0.0;
+    for (const auto& [label, count] : actual_counts) {
+        const double predicted_count = predicted_counts.count(label) ? predicted_counts.at(label) : 0.0;
+        expected_agreement += (count / n) * (predicted_count / n);
+    }
+
+    return (1.0 - expected_agreement) == 0.0 ? 1.0 : (observed_agreement - expected_agreement) / (1.0 - expected_agreement);
+}
+
+/**
+ * @brief Jaccard similarity between the positive-class predictions and actual labels.
+ *
+ * jaccard = |intersection| / |union| of the samples predicted or labeled positive.
+ */
+inline double jaccard_score(const std::vector<int>& actual, const std::vector<int>& predicted, int positive_label = 1) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("jaccard_score: inputs must be non-empty and equally sized");
+    }
+
+    size_t intersection = 0, union_count = 0;
+    for (size_t i = 0; i < actual.size(); ++i) {
+        const bool a = actual[i] == positive_label;
+        const bool p = predicted[i] == positive_label;
+        if (a || p) ++union_count;
+        if (a && p) ++intersection;
+    }
+    return union_count == 0 ? 1.0 : static_cast<double>(intersection) / static_cast<double>(union_count);
+}
+
+/**
+ * @brief Hamming loss: fraction of labels that were predicted incorrectly.
+ *
+ * Equivalent to (1 - accuracy_score) for single-label classification.
+ */
+inline double hamming_loss(const std::vector<int>& actual, const std::vector<int>& predicted) {
+    if (actual.empty() || actual.size() != predicted.size()) {
+        throw std::invalid_argument("hamming_loss: inputs must be non-empty and equally sized");
+    }
+    size_t mismatches = 0;
+    for (size_t i = 0; i < actual.size(); ++i) if (actual[i] != predicted[i]) ++mismatches;
+    return static_cast<double>(mismatches) / static_cast<double>(actual.size());
+}
+
 } // namespace ml

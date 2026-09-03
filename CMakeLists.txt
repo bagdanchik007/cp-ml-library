@@ -54,6 +54,7 @@ add_executable(
     examples/feature_selection/feature_selection_demo.cpp
     examples/new_algorithms_demo.cpp
     examples/more_algorithms_demo.cpp
+    examples/third_round_algorithms_demo.cpp
 )
 
 target_link_libraries(
@@ -217,13 +218,28 @@ add_ml_test(
 )
 
 add_ml_test(
+    agglomerative_clustering_tests
+    tests/algorithms/agglomerative_clustering_tests.cpp
+)
+
+add_ml_test(
     knn_classifier_tests
     tests/algorithms/knn_classifier_tests.cpp
 )
 
 add_ml_test(
+    weighted_knn_classifier_tests
+    tests/algorithms/weighted_knn_classifier_tests.cpp
+)
+
+add_ml_test(
     gaussian_naive_bayes_tests
     tests/algorithms/gaussian_naive_bayes_tests.cpp
+)
+
+add_ml_test(
+    multinomial_naive_bayes_tests
+    tests/algorithms/multinomial_naive_bayes_tests.cpp
 )
 
 add_ml_test(
@@ -249,6 +265,11 @@ add_ml_test(
 add_ml_test(
     lasso_regression_tests
     tests/algorithms/lasso_regression_tests.cpp
+)
+
+add_ml_test(
+    elastic_net_tests
+    tests/algorithms/elastic_net_tests.cpp
 )
 
 add_ml_test(
@@ -313,6 +334,16 @@ add_ml_test(
 add_ml_test(
     ordinal_encoder_tests
     tests/preprocessing/ordinal_encoder_tests.cpp
+)
+
+add_ml_test(
+    label_binarizer_tests
+    tests/preprocessing/label_binarizer_tests.cpp
+)
+
+add_ml_test(
+    function_transformer_tests
+    tests/preprocessing/function_transformer_tests.cpp
 )
 
 add_ml_test(
@@ -433,6 +464,11 @@ add_ml_test(
 )
 
 add_ml_test(
+    agreement_metrics_tests
+    tests/metrics/agreement_metrics_tests.cpp
+)
+
+add_ml_test(
     model_selection_tests
     tests/model_selection/model_selection_tests.cpp
 )
@@ -445,6 +481,21 @@ add_ml_test(
 add_ml_test(
     leave_one_out_tests
     tests/model_selection/leave_one_out_tests.cpp
+)
+
+add_ml_test(
+    repeated_kfold_tests
+    tests/model_selection/repeated_kfold_tests.cpp
+)
+
+add_ml_test(
+    shuffle_split_tests
+    tests/model_selection/shuffle_split_tests.cpp
+)
+
+add_ml_test(
+    randomized_search_tests
+    tests/model_selection/randomized_search_tests.cpp
 )
 
 add_ml_test(

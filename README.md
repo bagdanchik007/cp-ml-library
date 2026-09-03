@@ -60,7 +60,7 @@ cmake --build build --target matrix_benchmark algorithm_benchmark
 
 ## Versioning
 
-The project follows semantic versioning. The current public API target is **v1.2.0**; see [CHANGELOG.md](CHANGELOG.md) for release notes.
+The project follows semantic versioning. The current public API target is **v1.3.0**; see [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ## License
 

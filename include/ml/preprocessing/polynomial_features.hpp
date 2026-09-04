@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstddef>
 #include <stdexcept>
+#include <vector>
 
 namespace ml {
 
@@ -42,6 +43,14 @@ public:
 
         feature_count_ = data.cols;
 
+        combinations_.clear();
+
+        generate_combinations(
+            0,
+            degree_,
+            {}
+        );
+
         fitted_ = true;
     }
 
@@ -52,7 +61,8 @@ public:
         validate_transform_input(data);
 
         const size_t output_features =
-            calculate_output_features();
+            combinations_.size() +
+            (include_bias_ ? 1 : 0);
 
         Matrix result(
             data.rows,
@@ -76,31 +86,40 @@ public:
             }
 
             for (
-                size_t power = 1;
-                power <= degree_;
-                ++power
+                const auto& combination :
+                combinations_
             ) {
-                for (
-                    size_t column = 0;
-                    column < data.cols;
-                    ++column
-                ) {
-                    result(
-                        row,
-                        output_column
-                    ) = std::pow(
-                        data(row, column),
-                        static_cast<double>(
-                            power
-                        )
-                    );
+                double value = 1.0;
 
-                    ++output_column;
+                for (
+                    size_t column :
+                    combination
+                ) {
+                    value *= data(
+                        row,
+                        column
+                    );
                 }
+
+                result(
+                    row,
+                    output_column
+                ) = value;
+
+                ++output_column;
             }
         }
 
         return result;
+    }
+
+    Matrix fit_transform(
+        const Matrix& data
+    )
+    {
+        fit(data);
+
+        return transform(data);
     }
 
     bool is_fitted() const noexcept
@@ -119,6 +138,44 @@ public:
     }
 
 private:
+
+    void generate_combinations(
+        size_t start,
+        size_t remaining,
+        std::vector<size_t> combination
+    )
+    {
+        if (!combination.empty()) {
+            combinations_.push_back(
+                combination
+            );
+        }
+
+        if (
+            combination.size() ==
+            degree_
+        ) {
+            return;
+        }
+
+        for (
+            size_t column = start;
+            column < feature_count_;
+            ++column
+        ) {
+            combination.push_back(
+                column
+            );
+
+            generate_combinations(
+                column,
+                remaining - 1,
+                combination
+            );
+
+            combination.pop_back();
+        }
+    }
 
     void validate_transform_input(
         const Matrix& data
@@ -151,18 +208,15 @@ private:
         }
     }
 
-    size_t calculate_output_features() const
-    {
-        return
-            feature_count_ * degree_ +
-            (include_bias_ ? 1 : 0);
-    }
-
     size_t degree_;
 
     bool include_bias_;
 
     size_t feature_count_ = 0;
+
+    std::vector<
+        std::vector<size_t>
+    > combinations_;
 
     bool fitted_ = false;
 

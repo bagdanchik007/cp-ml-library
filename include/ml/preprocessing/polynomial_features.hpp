@@ -2,6 +2,7 @@
 
 #include "ml/core/matrix/matrix.hpp"
 
+#include <cmath>
 #include <cstddef>
 #include <stdexcept>
 
@@ -48,34 +49,14 @@ public:
         const Matrix& data
     ) const
     {
-        if (!fitted_) {
-            throw std::logic_error(
-                "PolynomialFeatures::transform: "
-                "transformer has not been fitted"
-            );
-        }
+        validate_transform_input(data);
 
-        if (
-            data.rows == 0 ||
-            data.cols == 0
-        ) {
-            throw std::invalid_argument(
-                "PolynomialFeatures::transform: "
-                "input data must not be empty"
-            );
-        }
-
-        if (data.cols != feature_count_) {
-            throw std::invalid_argument(
-                "PolynomialFeatures::transform: "
-                "feature count mismatch"
-            );
-        }
+        const size_t output_features =
+            calculate_output_features();
 
         Matrix result(
             data.rows,
-            feature_count_ +
-            (include_bias_ ? 1 : 0)
+            output_features
         );
 
         for (
@@ -95,19 +76,27 @@ public:
             }
 
             for (
-                size_t column = 0;
-                column < data.cols;
-                ++column
+                size_t power = 1;
+                power <= degree_;
+                ++power
             ) {
-                result(
-                    row,
-                    output_column
-                ) = data(
-                    row,
-                    column
-                );
+                for (
+                    size_t column = 0;
+                    column < data.cols;
+                    ++column
+                ) {
+                    result(
+                        row,
+                        output_column
+                    ) = std::pow(
+                        data(row, column),
+                        static_cast<double>(
+                            power
+                        )
+                    );
 
-                ++output_column;
+                    ++output_column;
+                }
             }
         }
 
@@ -130,6 +119,44 @@ public:
     }
 
 private:
+
+    void validate_transform_input(
+        const Matrix& data
+    ) const
+    {
+        if (!fitted_) {
+            throw std::logic_error(
+                "PolynomialFeatures::transform: "
+                "transformer has not been fitted"
+            );
+        }
+
+        if (
+            data.rows == 0 ||
+            data.cols == 0
+        ) {
+            throw std::invalid_argument(
+                "PolynomialFeatures::transform: "
+                "input data must not be empty"
+            );
+        }
+
+        if (
+            data.cols != feature_count_
+        ) {
+            throw std::invalid_argument(
+                "PolynomialFeatures::transform: "
+                "feature count mismatch"
+            );
+        }
+    }
+
+    size_t calculate_output_features() const
+    {
+        return
+            feature_count_ * degree_ +
+            (include_bias_ ? 1 : 0);
+    }
 
     size_t degree_;
 

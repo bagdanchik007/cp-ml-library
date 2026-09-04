@@ -40,6 +40,8 @@ int main() {
 
 See [examples documentation](docs/examples.md) for data loading, evaluation and clustering examples. The public API and architectural boundaries are described in [docs](docs/).
 
+For an in-depth mathematical derivation of Logistic Regression and Ridge/Lasso regularization, including a benchmark against scikit-learn, see [docs/deep-dive-logistic-regression-and-regularization.md](docs/deep-dive-logistic-regression-and-regularization.md).
+
 ## Install as a CMake package
 
 ```bash

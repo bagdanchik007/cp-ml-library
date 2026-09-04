@@ -18,4 +18,9 @@ out/
 
 # Misc
 .DS_Store
+
+# Benchmark-Skripte erzeugen diese Dateien deterministisch, nicht einchecken
+docs/benchmark/*.csv
+docs/benchmark/*.json
+docs/benchmark/cpp_benchmark
 *.log

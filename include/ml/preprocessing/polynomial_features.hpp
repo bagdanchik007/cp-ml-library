@@ -2,70 +2,71 @@
 
 #include "ml/core/matrix/matrix.hpp"
 
-#include <cmath>
 #include <cstddef>
 #include <stdexcept>
 
 namespace ml {
 
 class PolynomialFeatures {
+
 public:
+
     explicit PolynomialFeatures(
-        size_t degree = 2
+        size_t degree = 2,
+        bool include_bias = true
     )
-        : degree_(degree) {
+        : degree_(degree),
+          include_bias_(include_bias)
+    {
         if (degree_ == 0) {
             throw std::invalid_argument(
-                "PolynomialFeatures: degree must be greater than zero"
+                "PolynomialFeatures: degree must be positive"
             );
         }
     }
 
-    Matrix transform(
+    void fit(
         const Matrix& data
-    ) const {
-        if (data.rows == 0 || data.cols == 0) {
+    )
+    {
+        if (
+            data.rows == 0 ||
+            data.cols == 0
+        ) {
             throw std::invalid_argument(
-                "PolynomialFeatures::transform: input data must not be empty"
+                "PolynomialFeatures::fit: "
+                "input data must not be empty"
             );
         }
 
-        Matrix result(
-            data.rows,
-            data.cols * degree_
-        );
-
-        for (size_t row = 0; row < data.rows; ++row) {
-            for (size_t column = 0; column < data.cols; ++column) {
-                const double value =
-                    data(row, column);
-
-                for (size_t power = 1;
-                     power <= degree_;
-                     ++power) {
-                    const size_t result_column =
-                        column * degree_ + (power - 1);
-
-                    result(row, result_column) =
-                        std::pow(
-                            value,
-                            static_cast<double>(power)
-                        );
-                }
-            }
-        }
-
-        return result;
+        feature_count_ = data.cols;
+        fitted_ = true;
     }
 
-    Matrix fit_transform(
-        const Matrix& data
-    ) const {
-        return transform(data);
+    bool is_fitted() const noexcept
+    {
+        return fitted_;
+    }
+
+    size_t degree() const noexcept
+    {
+        return degree_;
+    }
+
+    bool include_bias() const noexcept
+    {
+        return include_bias_;
     }
 
 private:
+
     size_t degree_;
+    bool include_bias_;
+
+    size_t feature_count_ = 0;
+
+    bool fitted_ = false;
+
 };
 
 } // namespace ml

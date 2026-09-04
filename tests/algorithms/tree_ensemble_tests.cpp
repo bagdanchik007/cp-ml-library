@@ -9,8 +9,8 @@ int main() {
     const std::vector<int> labels{0, 0, 1, 1, 1, 1};
     ml::DecisionTreeClassifier tree(3);
     tree.fit(features, labels);
-    assert(ml::accuracy_score(labels, tree.predict(features)) == 1.0);
+    assert(ml::accuracy_score(labels, tree.predict_labels(features)) == 1.0);
     ml::RandomForestClassifier forest(15, 4, 2, 17);
     forest.fit(features, labels);
-    assert(ml::accuracy_score(labels, forest.predict(features)) >= 5.0 / 6.0);
+    assert(ml::accuracy_score(labels, forest.predict_labels(features)) >= 5.0 / 6.0);
 }

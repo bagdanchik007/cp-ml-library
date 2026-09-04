@@ -40,7 +40,78 @@ public:
         }
 
         feature_count_ = data.cols;
+
         fitted_ = true;
+    }
+
+    Matrix transform(
+        const Matrix& data
+    ) const
+    {
+        if (!fitted_) {
+            throw std::logic_error(
+                "PolynomialFeatures::transform: "
+                "transformer has not been fitted"
+            );
+        }
+
+        if (
+            data.rows == 0 ||
+            data.cols == 0
+        ) {
+            throw std::invalid_argument(
+                "PolynomialFeatures::transform: "
+                "input data must not be empty"
+            );
+        }
+
+        if (data.cols != feature_count_) {
+            throw std::invalid_argument(
+                "PolynomialFeatures::transform: "
+                "feature count mismatch"
+            );
+        }
+
+        Matrix result(
+            data.rows,
+            feature_count_ +
+            (include_bias_ ? 1 : 0)
+        );
+
+        for (
+            size_t row = 0;
+            row < data.rows;
+            ++row
+        ) {
+            size_t output_column = 0;
+
+            if (include_bias_) {
+                result(
+                    row,
+                    output_column
+                ) = 1.0;
+
+                ++output_column;
+            }
+
+            for (
+                size_t column = 0;
+                column < data.cols;
+                ++column
+            ) {
+                result(
+                    row,
+                    output_column
+                ) = data(
+                    row,
+                    column
+                );
+
+                ++output_column;
+            }
+        }
+
+        return result;
     }
 
     bool is_fitted() const noexcept
@@ -61,6 +132,7 @@ public:
 private:
 
     size_t degree_;
+
     bool include_bias_;
 
     size_t feature_count_ = 0;

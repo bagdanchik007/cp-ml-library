@@ -2,7 +2,6 @@
 
 #include "ml/core/matrix/matrix.hpp"
 
-#include <cmath>
 #include <cstddef>
 #include <stdexcept>
 #include <vector>
@@ -45,11 +44,17 @@ public:
 
         combinations_.clear();
 
-        generate_combinations(
-            0,
-            degree_,
-            {}
-        );
+        for (
+            size_t degree = 1;
+            degree <= degree_;
+            ++degree
+        ) {
+            generate_combinations(
+                0,
+                degree,
+                {}
+            );
+        }
 
         fitted_ = true;
     }
@@ -145,16 +150,11 @@ private:
         std::vector<size_t> combination
     )
     {
-        if (!combination.empty()) {
+        if (remaining == 0) {
             combinations_.push_back(
                 combination
             );
-        }
 
-        if (
-            combination.size() ==
-            degree_
-        ) {
             return;
         }
 

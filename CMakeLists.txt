@@ -469,6 +469,11 @@ add_ml_test(
 )
 
 add_ml_test(
+    permutation_importance_tests
+    tests/metrics/permutation_importance_tests.cpp
+)
+
+add_ml_test(
     model_selection_tests
     tests/model_selection/model_selection_tests.cpp
 )

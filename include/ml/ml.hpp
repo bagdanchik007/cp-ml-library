@@ -38,6 +38,7 @@
 #include "data/csv_reader.hpp"
 
 #include "metrics/model_evaluation.hpp"
+#include "metrics/permutation_importance.hpp"
 
 #include "model_selection/kfold.hpp"
 #include "model_selection/stratified_kfold.hpp"
